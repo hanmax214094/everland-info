@@ -1,0 +1,44 @@
+[
+    {
+        "codeId": "01",
+        "codeName": "한식",
+        "codeNameCN": "韓式",
+        "codeNameEng": "Korean Food"
+    },
+    {
+        "codeId": "02",
+        "codeName": "중식",
+        "codeNameCN": "中式",
+        "codeNameEng": "Chinese Food"
+    },
+    {
+        "codeId": "03",
+        "codeName": "양식",
+        "codeNameCN": "西式",
+        "codeNameEng": "Western Food"
+    },
+    {
+        "codeId": "04",
+        "codeName": "패스트푸드",
+        "codeNameCN": "速食",
+        "codeNameEng": "Fast Food"
+    },
+    {
+        "codeId": "05",
+        "codeName": "스낵",
+        "codeNameCN": "點心",
+        "codeNameEng": "Snacks"
+    },
+    {
+        "codeId": "06",
+        "codeName": "카페",
+        "codeNameCN": "咖啡",
+        "codeNameEng": "Cafe"
+    },
+    {
+        "codeId": "07",
+        "codeName": "기타",
+        "codeNameCN": "其他",
+        "codeNameEng": "Others"
+    }
+] 

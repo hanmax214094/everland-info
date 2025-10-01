@@ -1,0 +1,38 @@
+[
+    {
+        "codeId": "01",
+        "codeName": "글로벌페어",
+        "codeNameEng": "Global Fair",
+        "codeNameCN": "全球博覽會"
+    },
+    {
+        "codeId": "02",
+        "codeName": "아메리칸 어드벤처",
+        "codeNameEng": "American Adventure",
+        "codeNameCN": "美國冒險"
+    },
+    {
+        "codeId": "03",
+        "codeName": "매직랜드",
+        "codeNameEng": "Magic Land",
+        "codeNameCN": "魔法樂園"
+    },
+    {
+        "codeId": "05",
+        "codeName": "유러피언 어드벤처",
+        "codeNameEng": "European Adventure",
+        "codeNameCN": "歐洲冒險"
+    },
+    {
+        "codeId": "06",
+        "codeName": "주토피아",
+        "codeNameEng": "Zootopia",
+        "codeNameCN": "動物王國"
+    },
+    {
+        "codeId": "12",
+        "codeName": "기타 지역",
+        "codeNameEng": "Other Region",
+        "codeNameCN": "其他地區"
+    }
+]
