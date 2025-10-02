@@ -1,169 +1,156 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-Hant">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Everland Restaurants</title>
+    <title>Everland Restaurants - Card View</title>
     <style>
         body {
-            font-family: sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #343a40;
+            color: #f8f9fa;
+            margin: 0;
+            padding: 20px;
         }
-        table {
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        .card {
+            background-color: #495057;
+            border-radius: 8px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        .card-img {
             width: 100%;
-            border-collapse: collapse;
+            height: 180px;
+            object-fit: cover;
         }
-        th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: left;
-            vertical-align: top;
+        .card-content {
+            padding: 15px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
         }
-        th {
-            background-color: #f2f2f2;
-        }
-        .thumbnail, .banner-image, .menu-image {
-            max-width: 100px;
-            max-height: 100px;
-            cursor: pointer;
-            margin: 5px;
-        }
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1;
-            padding-top: 100px;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgb(0,0,0);
-            background-color: rgba(0,0,0,0.9);
-        }
-        .modal-content {
-            margin: auto;
-            display: block;
-            width: 80%;
-            max-width: 700px;
-        }
-        .close {
-            position: absolute;
-            top: 15px;
-            right: 35px;
-            color: #f1f1f1;
-            font-size: 40px;
+        .card-title {
+            font-size: 1.25rem;
             font-weight: bold;
-            transition: 0.3s;
+            margin: 0 0 10px 0;
         }
-        .close:hover,
-        .close:focus {
-            color: #bbb;
-            text-decoration: none;
-            cursor: pointer;
+        .card-tag {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .card-name-eng {
+            color: #ced4da;
+            margin: 0 0 10px 0;
+            font-style: italic;
+        }
+        .card-keywords {
+            color: #adb5bd;
+            font-size: 0.9rem;
+            flex-grow: 1;
+        }
+        .map-buttons {
+            margin-top: 15px;
         }
         .map-button {
-            padding: 5px 10px;
-            background-color: #4CAF50;
-            color: white;
+            padding: 8px 12px;
             border: none;
-            cursor: pointer;
+            border-radius: 4px;
+            color: white;
             text-decoration: none;
+            font-size: 0.9rem;
+            cursor: pointer;
             margin-right: 5px;
         }
+        .google-btn {
+            background-color: #4285F4;
+        }
+        .naver-btn {
+            background-color: #03C75A;
+        }
+
+        /* Tag Colors */
+        .tag-korean { background-color: #8B4513; color: white; }
+        .tag-western { background-color: #2E8B57; color: white; }
+        .tag-chinese { background-color: #DC143C; color: white; }
+        .tag-snacks { background-color: #FF8C00; color: white; }
+        .tag-cafe { background-color: #4682B4; color: white; }
+        .tag-others { background-color: #6c757d; color: white; }
+        .tag-default { background-color: #6c757d; color: white; }
+
     </style>
 </head>
 <body>
 
-    <h1>Everland Restaurants</h1>
-
-    <table id="restaurants-table">
-        <thead>
-            <tr>
-                <th>縮圖</th>
-                <th>區域 (中文)</th>
-                <th>餐廳名稱 (中文)</th>
-                <th>餐廳名稱 (英文)</th>
-                <th>食物類型 (中文)</th>
-                <th>營業時間</th>
-                <th>最後點餐時間</th>
-                <th>Banner 圖片</th>
-                <th>菜單</th>
-                <th>地圖</th>
-            </tr>
-        </thead>
-        <tbody>
-        </tbody>
-    </table>
-
-    <div id="myModal" class="modal">
-        <span class="close">&times;</span>
-        <img class="modal-content" id="img01">
+    <div class="grid-container" id="restaurants-grid">
+        <!-- Cards will be injected here by JavaScript -->
     </div>
 
     <script>
-        const modal = document.getElementById("myModal");
-        const modalImg = document.getElementById("img01");
-        const span = document.getElementsByClassName("close")[0];
-
-        span.onclick = function() {
-            modal.style.display = "none";
-        }
-
-        function showImage(src) {
-            modal.style.display = "block";
-            modalImg.src = src;
+        function getTagClass(foodType) {
+            if (!foodType) return 'tag-default';
+            if (foodType.includes('韓式')) return 'tag-korean';
+            if (foodType.includes('西式')) return 'tag-western';
+            if (foodType.includes('中式')) return 'tag-chinese';
+            if (foodType.includes('點心')) return 'tag-snacks';
+            if (foodType.includes('咖啡')) return 'tag-cafe';
+            return 'tag-others';
         }
 
         fetch('./mainShortInfo.json')
             .then(response => response.json())
             .then(data => {
-                const tableBody = document.querySelector("#restaurants-table tbody");
+                const grid = document.getElementById('restaurants-grid');
                 data.forEach(item => {
-                    const row = document.createElement("tr");
+                    const card = document.createElement('div');
+                    card.className = 'card';
 
-                    let bannerImages = '';
-                    if (item.DetailShortInfo.bannerImgUrl) {
-                        item.DetailShortInfo.bannerImgUrl.forEach(img => {
-                            bannerImages += `<img src="${img.bannerImgUrl}" class="banner-image" onclick="showImage(this.src)">`;
-                        });
-                    }
+                    const lat = item.DetailShortInfo.locList && item.DetailShortInfo.locList[0] ? item.DetailShortInfo.locList[0].latud : null;
+                    const lng = item.DetailShortInfo.locList && item.DetailShortInfo.locList[0] ? item.DetailShortInfo.locList[0].lgtud : null;
+                    
+                    const googleMapUrl = lat && lng ? `https://www.google.com/maps?q=${lat},${lng}` : '#';
+                    const naverMapUrl = lat && lng ? `https://map.naver.com/v5/?c=${lng},${lat},15,0,0,0,dh` : '#';
 
-                    let menu = '<table>';
-                    if (item.DetailShortInfo.menuList) {
-                        item.DetailShortInfo.menuList.forEach(menuItem => {
-                            menu += `<tr>
-                                        <td><img src="${menuItem.menuImagUrl}" class="menu-image" onclick="showImage(this.src)"></td>
-                                        <td>${menuItem.menuDescrtCN}</td>
-                                        <td>${menuItem.menuDescrtEng}</td>
-                                        <td>${menuItem.menuPrice}</td>
-                                    </tr>`;
-                        });
-                    }
-                    menu += '</table>';
-
-                    let lat = item.DetailShortInfo.locList[0].latud;
-                    let lng = item.DetailShortInfo.locList[0].lgtud;
-                    let googleMapUrl = `https://www.google.com/maps?q=${lat},${lng}`;
-                    let naverMapUrl = `https://map.naver.com/v5/?c=${lng},${lat},15,0,0,0,dh`;
+                    const foodType = item.FoodTypeListStringCN || '';
+                    const tagClass = getTagClass(foodType);
+                    
+                    // Handle potential null values
+                    const faciltNameCN = item.DetailShortInfo.faciltNameCN || 'N/A';
+                    const faciltNameEng = item.DetailShortInfo.faciltNameEng || 'N/A';
+                    const thumbImagUrl = item.DetailShortInfo.thumbImagUrl || 'https://via.placeholder.com/300x180?text=No+Image';
+                    const keywordDescrtCN = item.DetailShortInfo.keywordDescrtCN || '';
 
 
-                    row.innerHTML = `
-                        <td><img src="${item.DetailShortInfo.thumbImagUrl}" class="thumbnail" onclick="showImage(this.src)"></td>
-                        <td>${item.ZoneNameCN}</td>
-                        <td>${item.DetailShortInfo.faciltNameCN}</td>
-                        <td>${item.DetailShortInfo.faciltNameEng}</td>
-                        <td>${item.FoodTypeListStringCN}</td>
-                        <td>${item.DetailShortInfo.time}</td>
-                        <td>${item.DetailShortInfo.lastOrderTime}</td>
-                        <td>${bannerImages}</td>
-                        <td>${menu}</td>
-                        <td>
-                            <a href="${googleMapUrl}" target="_blank" class="map-button">Google Map</a>
-                            <a href="${naverMapUrl}" target="_blank" class="map-button">Naver Map</a>
-                        </td>
+                    card.innerHTML = `
+                        <img src="${thumbImagUrl}" alt="${faciltNameCN}" class="card-img">
+                        <div class="card-content">
+                            <h2 class="card-title">${faciltNameCN}</h2>
+                            <span class="card-tag ${tagClass}">${foodType}</span>
+                            <p class="card-name-eng">${faciltNameEng}</p>
+                            <p class="card-keywords">${keywordDescrtCN.replace(/#/g, ', ')}</p>
+                            <div class="map-buttons">
+                                <a href="${googleMapUrl}" target="_blank" class="map-button google-btn">Google Map</a>
+                                <a href="${naverMapUrl}" target="_blank" class="map-button naver-btn">Naver Map</a>
+                            </div>
+                        </div>
                     `;
-                    tableBody.appendChild(row);
+                    grid.appendChild(card);
                 });
+            })
+            .catch(error => {
+                console.error('Error fetching or processing data:', error);
+                const grid = document.getElementById('restaurants-grid');
+                grid.innerHTML = '<p style="color: red;">無法載入餐廳資料，請確認 mainShortInfo.json 檔案是否存在於同一個資料夾中。</p>';
             });
     </script>
 
