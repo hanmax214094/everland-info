@@ -11,6 +11,7 @@
             color: #f8f9fa;
             margin: 0;
             padding: 20px;
+            padding-bottom: 100px; /* Add padding to bottom to avoid overlap with filter bar */
         }
         .grid-container {
             display: grid;
@@ -47,7 +48,9 @@
             border-radius: 4px;
             font-size: 0.8rem;
             font-weight: bold;
-            margin-bottom: 10px;
+            margin-right: 5px;
+            margin-bottom: 5px;
+            cursor: pointer; /* Make tags look clickable */
         }
         .card-name-eng {
             color: #ced4da;
@@ -79,14 +82,53 @@
             background-color: #03C75A;
         }
 
-        /* Tag Colors */
-        .tag-korean { background-color: #8B4513; color: white; }
-        .tag-western { background-color: #2E8B57; color: white; }
-        .tag-chinese { background-color: #DC143C; color: white; }
-        .tag-snacks { background-color: #FF8C00; color: white; }
-        .tag-cafe { background-color: #4682B4; color: white; }
-        .tag-others { background-color: #6c757d; color: white; }
-        .tag-default { background-color: #6c757d; color: white; }
+        /* Tag Colors by ID */
+        .tag-id-01 { background-color: #D9534F; color: white; } /* 韓式 */
+        .tag-id-02 { background-color: #F0AD4E; color: white; } /* 中式 */
+        .tag-id-03 { background-color: #5CB85C; color: white; } /* 西式 */
+        .tag-id-04 { background-color: #5BC0DE; color: white; } /* 速食 */
+        .tag-id-05 { background-color: #9B59B6; color: white; } /* 點心 */
+        .tag-id-06 { background-color: #34495E; color: white; } /* 咖啡 */
+        .tag-id-07 { background-color: #7F8C8D; color: white; } /* 其他 */
+        .tag-id-12 { background-color: #7F8C8D; color: white; } /* 其他地區 */
+
+        #filter-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: #212529;
+            padding: 10px;
+            box-shadow: 0 -2px 5px rgba(0,0,0,0.3);
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-height: 25vh;
+            overflow-y: auto;
+        }
+
+        .filter-section {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .filter-btn {
+            padding: 6px 12px;
+            border: 1px solid #6c757d;
+            background-color: transparent;
+            color: #f8f9fa;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+        }
+
+        .filter-btn.active {
+            background-color: #0d6efd;
+            border-color: #0d6efd;
+            color: white;
+        }
 
     </style>
 </head>
@@ -96,63 +138,172 @@
         <!-- Cards will be injected here by JavaScript -->
     </div>
 
+    <div id="filter-bar">
+        <div class="filter-section" id="food-type-filters"></div>
+        <div class="filter-section" id="zone-type-filters"></div>
+    </div>
+
     <script>
-        function getTagClass(foodType) {
-            if (!foodType) return 'tag-default';
-            if (foodType.includes('韓式')) return 'tag-korean';
-            if (foodType.includes('西式')) return 'tag-western';
-            if (foodType.includes('中式')) return 'tag-chinese';
-            if (foodType.includes('點心')) return 'tag-snacks';
-            if (foodType.includes('咖啡')) return 'tag-cafe';
-            return 'tag-others';
+        let allRestaurants = [];
+        let foodTypeMap = new Map();
+        let zoneTypeMap = new Map();
+        let activeFilters = {
+            food: new Set(),
+            zone: null
+        };
+
+        // --- DATA FETCHING ---
+        Promise.all([
+            fetch('./mainShortInfo.json').then(res => res.json()),
+            fetch('./faciltFoodType.json').then(res => res.json()),
+            fetch('./zoneKindCd.json').then(res => res.json())
+        ]).then(([mainInfo, foodTypesData, zoneTypesData]) => {
+            allRestaurants = mainInfo;
+            foodTypeMap = new Map(foodTypesData.map(item => [item.codeId, item.codeNameCN]));
+            zoneTypeMap = new Map(zoneTypesData.map(item => [item.codeId, item.codeNameCN]));
+
+            populateFilters(foodTypesData, zoneTypesData);
+            renderCards();
+        })
+        .catch(error => {
+            console.error('Error fetching or processing data:', error);
+            document.getElementById('restaurants-grid').innerHTML = '<p style="color: red; text-align: center;">無法載入資料，請確認所有 JSON 檔案都存在。</p>';
+        });
+
+        // --- UI POPULATION ---
+        function populateFilters(foodTypesData, zoneTypesData) {
+            const foodContainer = document.getElementById('food-type-filters');
+            const zoneContainer = document.getElementById('zone-type-filters');
+            foodContainer.innerHTML = '<span style="margin-right:10px; font-weight:bold; color: white;">食物:</span>' + foodTypesData.map(type => 
+                `<button class="filter-btn" id="filter-food-${type.codeId}" onclick="toggleFoodFilter('${type.codeId}')">${type.codeNameCN}</button>`
+            ).join('');
+            zoneContainer.innerHTML = '<span style="margin-right:10px; font-weight:bold; color: white;">區域:</span>' + zoneTypesData.map(type => 
+                `<button class="filter-btn" id="filter-zone-${type.codeId}" onclick="toggleZoneFilter('${type.codeId}')">${type.codeNameCN}</button>`
+            ).join('');
         }
 
-        fetch('./mainShortInfo.json')
-            .then(response => response.json())
-            .then(data => {
-                const grid = document.getElementById('restaurants-grid');
-                data.forEach(item => {
-                    const card = document.createElement('div');
-                    card.className = 'card';
+        // --- RENDERING ---
+        function renderCards() {
+            const grid = document.getElementById('restaurants-grid');
+            grid.innerHTML = ''; // Clear existing cards
 
-                    const lat = item.DetailShortInfo.locList && item.DetailShortInfo.locList[0] ? item.DetailShortInfo.locList[0].latud : null;
-                    const lng = item.DetailShortInfo.locList && item.DetailShortInfo.locList[0] ? item.DetailShortInfo.locList[0].lgtud : null;
-                    
-                    const googleMapUrl = lat && lng ? `https://www.google.com/maps?q=${lat},${lng}` : '#';
-                    const naverMapUrl = lat && lng ? `https://map.naver.com/v5/?c=${lng},${lat},15,0,0,0,dh` : '#';
-
-                    const foodType = item.FoodTypeListStringCN || '';
-                    const tagClass = getTagClass(foodType);
-                    
-                    // Handle potential null values
-                    const faciltNameCN = item.DetailShortInfo.faciltNameCN || 'N/A';
-                    const faciltNameEng = item.DetailShortInfo.faciltNameEng || 'N/A';
-                    const thumbImagUrl = item.DetailShortInfo.thumbImagUrl || 'https://via.placeholder.com/300x180?text=No+Image';
-                    const keywordDescrtCN = item.DetailShortInfo.keywordDescrtCN || '';
-
-
-                    card.innerHTML = `
-                        <img src="${thumbImagUrl}" alt="${faciltNameCN}" class="card-img">
-                        <div class="card-content">
-                            <h2 class="card-title">${faciltNameCN}</h2>
-                            <span class="card-tag ${tagClass}">${foodType}</span>
-                            <p class="card-name-eng">${faciltNameEng}</p>
-                            <p class="card-keywords">${keywordDescrtCN.replace(/#/g, ', ')}</p>
-                            <div class="map-buttons">
-                                <a href="${googleMapUrl}" target="_blank" class="map-button google-btn">Google Map</a>
-                                <a href="${naverMapUrl}" target="_blank" class="map-button naver-btn">Naver Map</a>
-                            </div>
-                        </div>
-                    `;
-                    grid.appendChild(card);
-                });
-            })
-            .catch(error => {
-                console.error('Error fetching or processing data:', error);
-                const grid = document.getElementById('restaurants-grid');
-                grid.innerHTML = '<p style="color: red;">無法載入餐廳資料，請確認 mainShortInfo.json 檔案是否存在於同一個資料夾中。</p>';
+            const filteredRestaurants = allRestaurants.filter(item => {
+                const foodMatch = activeFilters.food.size === 0 || (item.foodTypeCds || '').split(',').some(id => activeFilters.food.has(id.trim()));
+                const zoneMatch = !activeFilters.zone || (item.zoneType === activeFilters.zone);
+                return foodMatch && zoneMatch;
             });
-    </script>
 
+            if (filteredRestaurants.length === 0) {
+                grid.innerHTML = '<p style="text-align: center; grid-column: 1 / -1; font-size: 1.2rem;">找不到相符的資訊。</p>';
+                return;
+            }
+
+            filteredRestaurants.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'card';
+
+                const lat = item.DetailShortInfo.locList && item.DetailShortInfo.locList[0] ? item.DetailShortInfo.locList[0].latud : null;
+                const lng = item.DetailShortInfo.locList && item.DetailShortInfo.locList[0] ? item.DetailShortInfo.locList[0].lgtud : null;
+                const faciltNameCN = item.DetailShortInfo.faciltNameCN || `${item.DetailShortInfo.faciltNameEng} (${item.DetailShortInfo.faciltName})`;
+
+                const googleMapUrl = lat && lng ? `https://www.google.com/maps?q=${lat},${lng}` : '#';
+                const naverMapUrl = lat && lng ? `nmap://place?lat=${lat}&lng=${lng}&name=${encodeURIComponent(faciltNameCN)}&appname=com.max.everland` : '#';
+                const naverMapWebUrl = lat && lng ? `http://map.naver.com/v5/search/${encodeURIComponent(faciltNameCN)}/place/?lat=${lat}&lng=${lng}` : '#';
+
+                // Food Tags
+                const foodTypeIds = (item.foodTypeCds || '').split(',');
+                let foodTagsHTML = '';
+                if (foodTypeIds.length > 0 && foodTypeIds[0] !== '') {
+                    foodTypeIds.forEach(id => {
+                        const trimmedId = id.trim();
+                        const typeName = foodTypeMap.get(trimmedId) || '未知';
+                        foodTagsHTML += `<span class="card-tag tag-id-${trimmedId}" onclick="setFoodFilter('${trimmedId}')">${typeName}</span>`;
+                    });
+                }
+
+                // Zone Tag
+                const zoneId = item.zoneType;
+                const zoneName = zoneTypeMap.get(zoneId) || '未知區域';
+                const zoneTagHTML = zoneId ? `<span class="card-tag tag-id-${zoneId}" onclick="setZoneFilter('${zoneId}')">${zoneName}</span>` : '';
+
+                const faciltNameEng = item.DetailShortInfo.faciltNameEng || 'N/A';
+                const thumbImagUrl = item.DetailShortInfo.thumbImagUrl || 'https://via.placeholder.com/300x180?text=No+Image';
+                const keywordDescrtCN = item.DetailShortInfo.keywordDescrtCN || '';
+
+                card.innerHTML = `
+                    <img src="${thumbImagUrl}" alt="${faciltNameCN}" class="card-img">
+                    <div class="card-content">
+                        <h2 class="card-title">${faciltNameCN}</h2>
+                        <div>${foodTagsHTML}</div>
+                        <div>${zoneTagHTML}</div>
+                        <p class="card-name-eng">${faciltNameEng}</p>
+                        <p class="card-keywords">${keywordDescrtCN.replace(/#/g, ', ')}</p>
+                        <div class="map-buttons">
+                            <a href="${googleMapUrl}" target="_blank" class="map-button google-btn">Google Map</a>
+                            <a href="javascript:void(0);" onclick="openNaverMap('${naverMapUrl}', '${naverMapWebUrl}')" class="map-button naver-btn">Naver Map</a>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // --- FILTERING LOGIC ---
+        function toggleFoodFilter(foodId) {
+            const btn = document.getElementById(`filter-food-${foodId}`);
+            if (activeFilters.food.has(foodId)) {
+                activeFilters.food.delete(foodId);
+                if(btn) btn.classList.remove('active');
+            } else {
+                activeFilters.food.add(foodId);
+                if(btn) btn.classList.add('active');
+            }
+            renderCards();
+        }
+
+        function toggleZoneFilter(zoneId) {
+            const currentActiveBtn = activeFilters.zone ? document.getElementById(`filter-zone-${activeFilters.zone}`) : null;
+            if (currentActiveBtn) {
+                currentActiveBtn.classList.remove('active');
+            }
+
+            if (activeFilters.zone === zoneId) {
+                activeFilters.zone = null;
+            } else {
+                activeFilters.zone = zoneId;
+                const newActiveBtn = document.getElementById(`filter-zone-${zoneId}`);
+                if(newActiveBtn) newActiveBtn.classList.add('active');
+            }
+            renderCards();
+        }
+        
+        function setFoodFilter(foodId) {
+            activeFilters.food.clear();
+            document.querySelectorAll('#food-type-filters .filter-btn').forEach(b => b.classList.remove('active'));
+            activeFilters.food.add(foodId);
+            const btn = document.getElementById(`filter-food-${foodId}`);
+            if(btn) btn.classList.add('active');
+            renderCards();
+        }
+
+        function setZoneFilter(zoneId) {
+            activeFilters.zone = null; // Reset current zone filter before setting new one
+            toggleZoneFilter(zoneId);
+        }
+
+        // --- HELPERS ---
+        function openNaverMap(url, webUrl) {
+            const start = new Date().getTime();
+            window.location.href = url;
+            setTimeout(() => {
+                const end = new Date().getTime();
+                if (document.hidden || end - start >= 2000) {
+                    return; // App was opened
+                }
+                // Fallback to web URL in a new tab
+                window.open(webUrl, '_blank');
+            }, 1500);
+        }
+    </script>
 </body>
 </html>
