@@ -64,6 +64,9 @@
         }
         .map-buttons {
             margin-top: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
         .map-button {
             padding: 8px 12px;
@@ -73,13 +76,94 @@
             text-decoration: none;
             font-size: 0.9rem;
             cursor: pointer;
-            margin-right: 5px;
+            background-color: #0d6efd; /* Set background color for visibility */
         }
         .google-btn {
             background-color: #4285F4;
         }
         .naver-btn {
             background-color: #03C75A;
+        }
+
+        .map-logo {
+            height: 24px;
+            width: 24px;
+            vertical-align: middle;
+            transition: transform 0.2s;
+        }
+        .map-logo:hover {
+            transform: scale(1.1);
+        }
+
+        /* --- Modal Styles --- */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1000; /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgba(0,0,0,0.6); /* Semi-transparent background */
+        }
+
+        .close {
+            cursor: pointer;
+        }
+
+        #menuModal .modal-content-container {
+            position: relative; /* For positioning the close button */
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 600px;
+            border-radius: 8px;
+            color: #333;
+        }
+
+        #menuModal .close {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 24px;
+            font-weight: bold;
+            color: #aaa;
+        }
+
+        #menuModal .close:hover,
+        #menuModal .close:focus {
+            color: #333;
+        }
+
+        #menu-modal-content ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        #menu-modal-content li {
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid #eee;
+            padding: 10px 0;
+        }
+
+        #menu-modal-content li:last-child {
+            border-bottom: none;
+        }
+
+        #menu-modal-content img {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 4px;
+            margin-right: 15px;
+        }
+
+        #menu-modal-title {
+            margin-top: 0;
         }
 
         /* Tag Colors by ID */
@@ -143,6 +227,19 @@
         <div class="filter-section" id="zone-type-filters"></div>
     </div>
 
+    <div id="myModal" class="modal">
+        <span class="close">&times;</span>
+        <img class="modal-content" id="img01">
+    </div>
+
+    <div id="menuModal" class="modal">
+        <div class="modal-content-container">
+            <span class="close menu-close">&times;</span>
+            <h2 id="menu-modal-title">菜單</h2>
+            <div id="menu-modal-content"></div>
+        </div>
+    </div>
+
     <script>
         let allRestaurants = [];
         let foodTypeMap = new Map();
@@ -151,6 +248,17 @@
             food: new Set(),
             zone: null
         };
+
+        // --- MODAL SETUP ---
+        const imageModal = document.getElementById("myModal");
+        const imageModalImg = document.getElementById("img01");
+        const menuModal = document.getElementById("menuModal");
+        document.querySelector("#myModal .close").onclick = () => imageModal.style.display = "none";
+        document.querySelector("#menuModal .close").onclick = () => menuModal.style.display = "none";
+        window.onclick = function(event) {
+            if (event.target == imageModal) imageModal.style.display = "none";
+            if (event.target == menuModal) menuModal.style.display = "none";
+        }
 
         // --- DATA FETCHING ---
         Promise.all([
@@ -201,16 +309,17 @@
             filteredRestaurants.forEach(item => {
                 const card = document.createElement('div');
                 card.className = 'card';
+                const faciltId = item.DetailShortInfo.faciltId;
 
                 const lat = item.DetailShortInfo.locList && item.DetailShortInfo.locList[0] ? item.DetailShortInfo.locList[0].latud : null;
                 const lng = item.DetailShortInfo.locList && item.DetailShortInfo.locList[0] ? item.DetailShortInfo.locList[0].lgtud : null;
-                const faciltNameCN = item.DetailShortInfo.faciltNameCN || `${item.DetailShortInfo.faciltNameEng} (${item.DetailShortInfo.faciltName})`;
+                const faciltNameCN = item.DetailShortInfo.faciltNameCN || 'N/A';
 
                 const googleMapUrl = lat && lng ? `https://www.google.com/maps?q=${lat},${lng}` : '#';
                 const naverMapUrl = lat && lng ? `nmap://place?lat=${lat}&lng=${lng}&name=${encodeURIComponent(faciltNameCN)}&appname=com.max.everland` : '#';
                 const naverMapWebUrl = lat && lng ? `http://map.naver.com/v5/search/${encodeURIComponent(faciltNameCN)}/place/?lat=${lat}&lng=${lng}` : '#';
 
-                // Food Tags
+                // Tags
                 const foodTypeIds = (item.foodTypeCds || '').split(',');
                 let foodTagsHTML = '';
                 if (foodTypeIds.length > 0 && foodTypeIds[0] !== '') {
@@ -220,8 +329,6 @@
                         foodTagsHTML += `<span class="card-tag tag-id-${trimmedId}" onclick="setFoodFilter('${trimmedId}')">${typeName}</span>`;
                     });
                 }
-
-                // Zone Tag
                 const zoneId = item.zoneType;
                 const zoneName = zoneTypeMap.get(zoneId) || '未知區域';
                 const zoneTagHTML = zoneId ? `<span class="card-tag tag-id-${zoneId}" onclick="setZoneFilter('${zoneId}')">${zoneName}</span>` : '';
@@ -231,7 +338,7 @@
                 const keywordDescrtCN = item.DetailShortInfo.keywordDescrtCN || '';
 
                 card.innerHTML = `
-                    <img src="${thumbImagUrl}" alt="${faciltNameCN}" class="card-img">
+                    <img src="${thumbImagUrl}" alt="${faciltNameCN}" class="card-img" onclick="showImage('${thumbImagUrl}')">
                     <div class="card-content">
                         <h2 class="card-title">${faciltNameCN}</h2>
                         <div>${foodTagsHTML}</div>
@@ -239,8 +346,9 @@
                         <p class="card-name-eng">${faciltNameEng}</p>
                         <p class="card-keywords">${keywordDescrtCN.replace(/#/g, ', ')}</p>
                         <div class="map-buttons">
-                            <a href="${googleMapUrl}" target="_blank" class="map-button google-btn">Google Map</a>
-                            <a href="javascript:void(0);" onclick="openNaverMap('${naverMapUrl}', '${naverMapWebUrl}')" class="map-button naver-btn">Naver Map</a>
+                            <button class="map-button" onclick="openMenuModal('${faciltId}')">檢視菜單</button>
+                            <a href="${googleMapUrl}" target="_blank"><img src="google-maps.png" alt="Google Maps" class="map-logo"></a>
+                            <a href="javascript:void(0);" onclick="openNaverMap('${naverMapUrl}', '${naverMapWebUrl}')"><img src="naver-map.png" alt="Naver Map" class="map-logo"></a>
                         </div>
                     </div>
                 `;
@@ -291,16 +399,51 @@
             toggleZoneFilter(zoneId);
         }
 
-        // --- HELPERS ---
+        // --- HELPERS & MODALS ---
+        function showImage(src) {
+            imageModal.style.display = "block";
+            imageModalImg.src = src;
+        }
+
+        function openMenuModal(faciltId) {
+            const restaurant = allRestaurants.find(r => r.DetailShortInfo.faciltId === faciltId);
+            if (!restaurant) return;
+
+            const titleEl = document.getElementById('menu-modal-title');
+            const contentEl = document.getElementById('menu-modal-content');
+            
+            titleEl.innerText = `${restaurant.DetailShortInfo.faciltNameCN} - 菜單`;
+            
+            let menuHTML = '<ul>';
+            if (restaurant.DetailShortInfo.menuList && restaurant.DetailShortInfo.menuList.length > 0) {
+                restaurant.DetailShortInfo.menuList.forEach(item => {
+                    menuHTML += `
+                        <li>
+                            <img src="${item.menuImagUrl}" alt="${item.menuDescrtCN}">
+                            <div>
+                                <strong>${item.menuDescrtCN}</strong>
+                                <p>${item.menuDescrtEng || ''}</p>
+                                <p>價格: ${item.menuPrice}</p>
+                            </div>
+                        </li>`;
+                });
+            } else {
+                menuHTML += '<li>暫無菜單資訊。</li>';
+            }
+            menuHTML += '</ul>';
+            contentEl.innerHTML = menuHTML;
+
+            menuModal.style.display = 'block';
+        }
+
         function openNaverMap(url, webUrl) {
             const start = new Date().getTime();
             window.location.href = url;
             setTimeout(() => {
                 const end = new Date().getTime();
                 if (document.hidden || end - start >= 2000) {
-                    return; // App was opened
+                    return;
                 }
-                // Fallback to web URL in a new tab
                 window.open(webUrl, '_blank');
             }, 1500);
         }
