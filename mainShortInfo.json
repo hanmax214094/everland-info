@@ -248,6 +248,7 @@
         }
     },
     {
+        "Code": "69",
         "FoodTypeListStringCN": "速食,點心",
         "FoodTypeListStringEng": "Fast Food,Snacks",
         "foodTypeCds": "04,05",
