@@ -3,127 +3,478 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Everland Restaurants - Card View</title>
+    <title>Everland Restaurants Explorer</title>
     <style>
+        :root {
+            --bg-color: #f5f7fb;
+            --surface-color: #ffffff;
+            --surface-alt: #f1f3f8;
+            --text-color: #1f2a44;
+            --muted-color: #5a6785;
+            --accent-color: #5c6bf2;
+            --accent-color-dark: #4a57c9;
+            --tag-radius: 18px;
+            --border-radius: 18px;
+            --shadow: 0 18px 40px rgba(42, 61, 137, 0.12);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
         html {
-            font-size: 23px;
+            font-size: 18px;
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            background-color: #343a40;
-            color: #f8f9fa;
+            font-family: "Noto Sans TC", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: radial-gradient(circle at 0% 0%, rgba(161, 197, 255, 0.25), transparent 55%),
+                        radial-gradient(circle at 100% 0%, rgba(197, 181, 255, 0.25), transparent 55%),
+                        var(--bg-color);
+            color: var(--text-color);
             margin: 0;
-            padding: 20px;
-            padding-bottom: 100px; /* Add padding to bottom to avoid overlap with filter bar */
-            font-size: 1.28rem;
         }
+
+        #app {
+            min-height: 100vh;
+        }
+
+        .page-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 32px 24px 56px;
+        }
+
+        header {
+            margin-bottom: 24px;
+        }
+
+        .page-title {
+            font-size: 2.2rem;
+            margin: 0 0 8px;
+            font-weight: 700;
+        }
+
+        .page-description {
+            margin: 0;
+            color: var(--muted-color);
+            font-size: 1.1rem;
+            line-height: 1.5;
+        }
+
+        #filter-bar {
+            position: sticky;
+            top: 0;
+            z-index: 200;
+            padding: 18px 20px;
+            margin: 0 -20px 32px;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            border-radius: 0 0 24px 24px;
+            box-shadow: 0 24px 35px rgba(67, 85, 123, 0.12);
+        }
+
+        #filter-bar.is-collapsed {
+            padding-bottom: 16px;
+        }
+
+        .filter-bar__header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 10px;
+        }
+
+        .filter-bar__header-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .filter-bar__title {
+            margin: 0;
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--text-color);
+        }
+
+        .filter-bar__active-badge {
+            background: rgba(92, 107, 242, 0.18);
+            color: var(--accent-color);
+            padding: 4px 10px;
+            border-radius: 999px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .filter-bar__toggle {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            border-radius: 999px;
+            border: 1px solid rgba(92, 107, 242, 0.25);
+            background: #fff;
+            color: var(--accent-color);
+            padding: 8px 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .filter-bar__toggle:hover {
+            background: rgba(92, 107, 242, 0.1);
+            box-shadow: 0 10px 22px rgba(92, 107, 242, 0.18);
+        }
+
+        .filter-bar__toggle-icon {
+            width: 18px;
+            height: 18px;
+            transition: transform 0.2s ease;
+        }
+
+        #filter-bar:not(.is-collapsed) .filter-bar__toggle-icon {
+            transform: rotate(180deg);
+        }
+
+        .filter-bar__content {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        #filter-bar.is-collapsed .filter-bar__header {
+            margin-bottom: 0;
+        }
+
+        .filter-bar__summary {
+            margin: 0;
+            font-size: 0.9rem;
+            color: var(--muted-color);
+            background: rgba(92, 107, 242, 0.12);
+            border-radius: 14px;
+            padding: 10px 14px;
+            line-height: 1.4;
+        }
+
+        #filter-bar.is-collapsed .filter-bar__summary {
+            margin-top: 12px;
+        }
+
+        .search-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .search-input {
+            flex: 1 1 280px;
+            display: flex;
+            align-items: center;
+            background: var(--surface-alt);
+            border-radius: 999px;
+            padding: 10px 18px;
+            gap: 10px;
+            border: 1px solid transparent;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .search-input:focus-within {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 4px rgba(92, 107, 242, 0.12);
+        }
+
+        .search-input svg {
+            width: 20px;
+            height: 20px;
+            color: var(--muted-color);
+        }
+
+        .search-input input {
+            border: none;
+            background: transparent;
+            flex: 1;
+            font-size: 1rem;
+            color: var(--text-color);
+            outline: none;
+        }
+
+        .clear-button {
+            border: none;
+            background: var(--text-color);
+            color: #fff;
+            padding: 10px 18px;
+            border-radius: 999px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .clear-button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 10px 22px rgba(31, 42, 68, 0.2);
+        }
+
+        .filter-section {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .filter-label {
+            font-weight: 600;
+            color: var(--muted-color);
+            padding-right: 4px;
+        }
+
+        .filter-btn {
+            padding: 8px 18px;
+            border-radius: var(--tag-radius);
+            border: 1px solid rgba(92, 107, 242, 0.2);
+            background: #fff;
+            color: var(--muted-color);
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, color 0.2s ease, background 0.2s ease;
+        }
+
+        .filter-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 12px 24px rgba(92, 107, 242, 0.15);
+        }
+
+        .filter-btn.active {
+            background: var(--accent-color);
+            color: #fff;
+            box-shadow: 0 12px 24px rgba(92, 107, 242, 0.25);
+        }
+
+        .status-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            color: var(--muted-color);
+            font-size: 0.95rem;
+        }
+
         .grid-container {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 24px;
         }
+
         .card {
-            background-color: #495057;
-            border-radius: 8px;
+            background: var(--surface-color);
+            border-radius: var(--border-radius);
             overflow: hidden;
             display: flex;
             flex-direction: column;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            box-shadow: var(--shadow);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
+
+        .card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 24px 45px rgba(31, 42, 68, 0.18);
+        }
+
+        .card-image-gallery {
+            display: flex;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            scroll-behavior: smooth;
+            gap: 0;
+            background: var(--surface-alt);
+            -webkit-overflow-scrolling: touch;
+            position: relative;
+        }
+
+        .card-image-gallery::-webkit-scrollbar {
+            height: 6px;
+        }
+
+        .card-image-gallery::-webkit-scrollbar-thumb {
+            background: rgba(92, 107, 242, 0.4);
+            border-radius: 999px;
+        }
+
+        .card-image-gallery::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .card-image-indicator {
+            position: absolute;
+            right: 16px;
+            bottom: 16px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 999px;
+            background: rgba(31, 42, 68, 0.76);
+            color: #fff;
+            font-size: 0.82rem;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+            pointer-events: none;
+            box-shadow: 0 12px 24px rgba(31, 42, 68, 0.18);
+        }
+
+        .card-image-indicator svg {
+            width: 14px;
+            height: 14px;
+        }
+
         .card-img {
             width: 100%;
-            height: 180px;
+            height: 190px;
             object-fit: cover;
+            cursor: pointer;
+            flex-shrink: 0;
+            scroll-snap-align: center;
+            border-radius: var(--border-radius) var(--border-radius) 0 0;
         }
+
+        .card-image-gallery .card-img + .card-img {
+            margin-left: 0;
+        }
+
+        .card-image-placeholder {
+            background: var(--surface-alt);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: default;
+        }
+
         .card-content {
-            padding: 15px;
+            padding: 20px;
             flex-grow: 1;
             display: flex;
             flex-direction: column;
-            gap: 8px;
-        }
-        .card-title {
-            font-size: 1.45rem;
-            font-weight: bold;
-            margin: 0 0 10px 0;
-        }
-        .card-tag {
-            display: inline-block;
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 1.08rem;
-            font-weight: bold;
-            margin-right: 5px;
-            margin-bottom: 5px;
-            cursor: pointer; /* Make tags look clickable */
-        }
-        .card-name-eng {
-            color: #ced4da;
-            margin: 0 0 10px 0;
-            font-style: italic;
-            font-size: 16px;
-        }
-        .card-keywords {
-            color: #adb5bd;
-            font-size: 1.15rem;
-            margin: 0;
-        }
-        .map-buttons {
-            margin-top: auto;
-            padding-top: 10px;
-            display: flex;
-            align-items: center;
             gap: 12px;
         }
+
+        .card-title {
+            font-size: 1.35rem;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .card-tag {
+            display: inline-block;
+            padding: 6px 14px;
+            border-radius: var(--tag-radius);
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-right: 6px;
+            margin-bottom: 6px;
+            cursor: pointer;
+            background: var(--surface-alt);
+            color: var(--muted-color);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .card-tag:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 24px rgba(92, 107, 242, 0.15);
+        }
+
+        .card-name-eng {
+            color: var(--muted-color);
+            margin: 0;
+            font-style: italic;
+            font-size: 0.95rem;
+        }
+
+        .card-keywords {
+            color: var(--muted-color);
+            font-size: 0.95rem;
+            margin: 0;
+            line-height: 1.5;
+        }
+
+        .map-buttons {
+            margin-top: auto;
+            padding-top: 6px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .map-button {
+            padding: 10px 16px;
+            border: none;
+            border-radius: 12px;
+            color: white;
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            background: linear-gradient(135deg, var(--accent-color), var(--accent-color-dark));
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .map-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 14px 30px rgba(92, 107, 242, 0.3);
+        }
+
         .map-links {
             margin-left: auto;
             display: inline-flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
         }
+
         .map-links a {
             display: inline-flex;
             align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--surface-alt);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
-        .map-button {
-            padding: 8px 12px;
-            border: none;
-            border-radius: 4px;
-            color: white;
-            text-decoration: none;
-            font-size: 1.15rem;
-            cursor: pointer;
-            background-color: #0d6efd; /* Set background color for visibility */
-        }
-        .google-btn {
-            background-color: #4285F4;
-        }
-        .naver-btn {
-            background-color: #03C75A;
+
+        .map-links a:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 22px rgba(92, 107, 242, 0.15);
         }
 
         .map-logo {
-            height: 24px;
-            width: 24px;
-            vertical-align: middle;
+            height: 22px;
+            width: 22px;
             transition: transform 0.2s;
         }
-        .map-logo:hover {
+
+        .map-links a:hover .map-logo {
             transform: scale(1.1);
         }
 
         /* --- Modal Styles --- */
         .modal {
-            display: none; /* Hidden by default */
-            position: fixed; /* Stay in place */
-            z-index: 1000; /* Sit on top */
+            display: none;
+            position: fixed;
+            z-index: 1000;
             left: 0;
             top: 0;
-            width: 100%; /* Full width */
-            height: 100%; /* Full height */
-            overflow: auto; /* Enable scroll if needed */
-            background-color: rgba(0,0,0,0.6); /* Semi-transparent background */
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(15, 25, 60, 0.55);
+            backdrop-filter: blur(6px);
+            padding: 40px 18px;
+        }
+
+        .modal.show {
+            display: block;
         }
 
         .close {
@@ -131,357 +482,558 @@
         }
 
         #menuModal .modal-content-container {
-            position: relative; /* For positioning the close button */
-            background-color: #fefefe;
-            margin: 5% auto;
-            padding: 20px;
-            border: 1px solid #888;
-            width: 80%;
-            max-width: 600px;
-            border-radius: 8px;
-            color: #333;
+            position: relative;
+            background-color: var(--surface-color);
+            margin: 0 auto;
+            padding: 28px;
+            width: min(620px, 100%);
+            border-radius: 24px;
+            color: var(--text-color);
+            box-shadow: var(--shadow);
         }
 
         #menuModal .close {
             position: absolute;
-            top: 10px;
-            right: 15px;
-            font-size: 24px;
+            top: 16px;
+            right: 20px;
+            font-size: 26px;
             font-weight: bold;
-            color: #aaa;
+            color: var(--muted-color);
         }
 
         #menuModal .close:hover,
         #menuModal .close:focus {
-            color: #333;
+            color: var(--accent-color);
         }
 
         #menu-modal-content ul {
             list-style-type: none;
             padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
         }
 
         #menu-modal-content li {
             display: flex;
             align-items: center;
-            border-bottom: 1px solid #eee;
-            padding: 10px 0;
-            font-size: 1.18rem;
-        }
-
-        #menu-modal-content li:last-child {
-            border-bottom: none;
+            gap: 16px;
+            background: var(--surface-alt);
+            border-radius: 18px;
+            padding: 14px 16px;
+            font-size: 1rem;
         }
 
         #menu-modal-content img {
             width: 80px;
             height: 80px;
             object-fit: cover;
-            border-radius: 4px;
-            margin-right: 15px;
+            border-radius: 12px;
+            flex-shrink: 0;
         }
 
         #menu-modal-content li strong {
-            font-size: 1.3rem;
+            font-size: 1.05rem;
         }
 
-        #menu-modal-content li p:not(.menu-item-eng) {
-            margin: 2px 0;
-            font-size: 1.15rem;
+        #menu-modal-content li p {
+            margin: 4px 0 0;
+            color: var(--muted-color);
+            font-size: 0.95rem;
         }
 
         .menu-item-eng {
-            font-size: 16px;
+            font-size: 0.9rem;
         }
 
         #menu-modal-title {
-            margin-top: 0;
+            margin: 0 0 18px;
+            font-size: 1.4rem;
+            font-weight: 700;
+        }
+
+        #myModal .modal-image-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 40px auto 0;
+            width: min(90vw, 760px);
+        }
+
+        #myModal .modal-content {
+            display: block;
+            width: min(90vw, 640px);
+            max-height: 70vh;
+            margin: 0 auto;
+            border-radius: 24px;
+            box-shadow: var(--shadow);
+            object-fit: contain;
+        }
+
+        .modal-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 48px;
+            height: 48px;
+            border: none;
+            border-radius: 50%;
+            background: rgba(15, 25, 60, 0.65);
+            color: #fff;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background 0.2s ease, transform 0.2s ease;
+        }
+
+        .modal-nav svg {
+            width: 22px;
+            height: 22px;
+        }
+
+        .modal-nav:disabled {
+            opacity: 0.4;
+            cursor: default;
+            pointer-events: none;
+        }
+
+        .modal-nav:not(:disabled):hover,
+        .modal-nav:not(:disabled):focus {
+            background: rgba(15, 25, 60, 0.85);
+            transform: translateY(-50%) scale(1.05);
+        }
+
+        .modal-nav:not(:disabled):focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(92, 107, 242, 0.35);
+        }
+
+        .modal-nav--prev {
+            left: 12px;
+        }
+
+        .modal-nav--next {
+            right: 12px;
+        }
+
+        .modal-image-counter {
+            position: absolute;
+            bottom: 16px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(15, 25, 60, 0.75);
+            color: #fff;
+            padding: 6px 12px;
+            border-radius: 999px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            letter-spacing: 0.03em;
+        }
+
+        #myModal .close {
+            position: absolute;
+            top: 22px;
+            right: 30px;
+            font-size: 36px;
+            color: #fff;
         }
 
         /* Tag Colors by ID */
-        .tag-id-01 { background-color: #D9534F; color: white; } /* 韓式 */
-        .tag-id-02 { background-color: #F0AD4E; color: white; } /* 中式 */
-        .tag-id-03 { background-color: #5CB85C; color: white; } /* 西式 */
-        .tag-id-04 { background-color: #5BC0DE; color: white; } /* 速食 */
-        .tag-id-05 { background-color: #9B59B6; color: white; } /* 點心 */
-        .tag-id-06 { background-color: #34495E; color: white; } /* 咖啡 */
-        .tag-id-07 { background-color: #7F8C8D; color: white; } /* 其他 */
-        .tag-id-12 { background-color: #7F8C8D; color: white; } /* 其他地區 */
+        .tag-id-01 { background-color: rgba(234, 84, 85, 0.15); color: #d64040; }
+        .tag-id-02 { background-color: rgba(243, 156, 18, 0.15); color: #c2760f; }
+        .tag-id-03 { background-color: rgba(76, 175, 80, 0.15); color: #2f8d33; }
+        .tag-id-04 { background-color: rgba(3, 169, 244, 0.15); color: #0c6aa5; }
+        .tag-id-05 { background-color: rgba(155, 89, 182, 0.15); color: #6d2da0; }
+        .tag-id-06 { background-color: rgba(52, 73, 94, 0.18); color: #2c3e50; }
+        .tag-id-07,
+        .tag-id-12 { background-color: rgba(127, 140, 141, 0.15); color: #5f6c6d; }
 
-        #filter-bar {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            background-color: #212529;
-            padding: 10px;
-            box-shadow: 0 -2px 5px rgba(0,0,0,0.3);
-            z-index: 100;
+        .empty-state {
+            text-align: center;
+            grid-column: 1 / -1;
+            background: var(--surface-color);
+            padding: 36px;
+            border-radius: 24px;
+            box-shadow: var(--shadow);
+            color: var(--muted-color);
+            font-size: 1.1rem;
+        }
+
+        .loading-state {
             display: flex;
-            flex-direction: column;
-            gap: 10px;
-            max-height: 25vh;
-            overflow-y: auto;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+            padding: 60px 0;
+            color: var(--muted-color);
+            font-size: 1.1rem;
         }
 
-        .filter-section {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
+        .loading-spinner {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            border: 3px solid rgba(92, 107, 242, 0.2);
+            border-top-color: var(--accent-color);
+            animation: spin 0.8s linear infinite;
         }
 
-        .filter-btn {
-            padding: 6px 12px;
-            border: 1px solid #6c757d;
-            background-color: transparent;
-            color: #f8f9fa;
-            border-radius: 15px;
-            cursor: pointer;
-            transition: all 0.2s ease-in-out;
-            font-size: 1.15rem;
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
         }
 
-        .filter-btn.active {
-            background-color: #0d6efd;
-            border-color: #0d6efd;
-            color: white;
+        @media (max-width: 768px) {
+            .page-container {
+                padding: 20px 16px 48px;
+            }
+
+            #filter-bar {
+                margin: 0 -16px 24px;
+                border-radius: 0 0 20px 20px;
+            }
+
+            .filter-bar__header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 14px;
+            }
+
+            .filter-bar__toggle {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .filter-bar__summary {
+                width: 100%;
+            }
+
+            .grid-container {
+                gap: 18px;
+            }
+
+            .card {
+                border-radius: 20px;
+            }
+
+            .map-links {
+                gap: 10px;
+            }
+
+            #myModal .modal-image-wrapper {
+                margin-top: 24px;
+                width: 100%;
+            }
+
+            #myModal .modal-content {
+                width: 100%;
+                max-height: 60vh;
+            }
+
+            .modal-nav {
+                width: 40px;
+                height: 40px;
+            }
+
+            .modal-nav svg {
+                width: 18px;
+                height: 18px;
+            }
+
+            .modal-image-counter {
+                bottom: 12px;
+                font-size: 0.82rem;
+            }
         }
 
+        @media (max-width: 480px) {
+            .search-input {
+                flex: 1 1 100%;
+            }
+
+            .filter-bar__header {
+                align-items: stretch;
+            }
+
+            .clear-button {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .map-buttons {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .map-links {
+                margin-left: 0;
+            }
+
+            .modal-nav {
+                width: 36px;
+                height: 36px;
+            }
+
+            .modal-image-counter {
+                font-size: 0.75rem;
+                padding: 4px 10px;
+            }
+        }
     </style>
 </head>
 <body>
+    <div id="app">
+        <div class="page-container">
+            <header>
+                <h1 class="page-title">Everland 餐廳探索</h1>
+                <p class="page-description">即時篩選園區內的餐廳、點心與咖啡廳，快速找到下一站的美味。</p>
+            </header>
 
-    <div class="grid-container" id="restaurants-grid">
-        <!-- Cards will be injected here by JavaScript -->
-    </div>
+            <div v-if="errorMessage" class="empty-state" role="alert">{{ errorMessage }}</div>
 
-    <div id="filter-bar">
-        <div class="filter-section" id="food-type-filters"></div>
-        <div class="filter-section" id="zone-type-filters"></div>
-    </div>
+            <template v-else>
+                <section
+                    id="filter-bar"
+                    aria-label="篩選區塊"
+                    :class="{ 'is-collapsed': isFilterBarCollapsed }"
+                >
+                    <div class="filter-bar__header">
+                        <div class="filter-bar__header-left">
+                            <h2 class="filter-bar__title">搜尋與篩選</h2>
+                            <span
+                                v-if="hasActiveFilters && isFilterBarCollapsed"
+                                class="filter-bar__active-badge"
+                            >已套用篩選</span>
+                        </div>
+                        <button
+                            class="filter-bar__toggle"
+                            type="button"
+                            @click="toggleFilterBar"
+                            :aria-expanded="!isFilterBarCollapsed"
+                            aria-controls="filter-bar-content"
+                            :aria-describedby="isFilterBarCollapsed ? 'filter-bar-summary' : null"
+                        >
+                            <span>{{ filterBarToggleText }}</span>
+                            <svg viewBox="0 0 24 24" aria-hidden="true" class="filter-bar__toggle-icon">
+                                <path fill="currentColor" d="M7.41 8.59 12 13.17l4.59-4.58L18 10l-6 6-6-6z" />
+                            </svg>
+                        </button>
+                    </div>
+                    <p
+                        v-if="isFilterBarCollapsed"
+                        class="filter-bar__summary"
+                        id="filter-bar-summary"
+                    >{{ filterBarSummary }}</p>
+                    <div class="filter-bar__content" id="filter-bar-content" v-show="!isFilterBarCollapsed">
+                        <div class="search-row">
+                            <label class="search-input">
+                                <svg aria-hidden="true" viewBox="0 0 24 24" focusable="false">
+                                    <path fill="currentColor" d="M15.5 14h-.79l-.28-.27a6.5 6.5 0 1 0-.71.71l.27.28v.79l5 5L20.49 19zm-6 0A4.5 4.5 0 1 1 14 9.5 4.5 4.5 0 0 1 9.5 14z" />
+                                </svg>
+                                <input
+                                    type="search"
+                                    placeholder="搜尋餐廳名稱、關鍵字或菜單"
+                                    v-model.trim="searchQuery"
+                                    aria-label="搜尋餐廳"
+                                >
+                            </label>
+                            <button class="clear-button" type="button" v-if="hasActiveFilters" @click="clearFilters">清除篩選</button>
+                        </div>
 
-    <div id="myModal" class="modal">
-        <span class="close">&times;</span>
-        <img class="modal-content" id="img01">
-    </div>
+                        <div class="filter-section" id="food-type-filters">
+                            <span class="filter-label">食物類型：</span>
+                            <button
+                                v-for="food in foodTypes"
+                                :key="food.codeId"
+                                class="filter-btn"
+                                :class="{ active: isFoodFilterActive(food.codeId) }"
+                                @click="toggleFoodFilter(food.codeId)"
+                                type="button"
+                            >{{ food.codeNameCN }}</button>
+                        </div>
+                        <div class="filter-section" id="zone-type-filters">
+                            <span class="filter-label">園區分區：</span>
+                            <button
+                                v-for="zone in zoneTypes"
+                                :key="zone.codeId"
+                                class="filter-btn"
+                                :class="{ active: isZoneFilterActive(zone.codeId) }"
+                                @click="toggleZoneFilter(zone.codeId)"
+                                type="button"
+                            >{{ zone.codeNameCN }}</button>
+                        </div>
 
-    <div id="menuModal" class="modal">
-        <div class="modal-content-container">
-            <span class="close menu-close">&times;</span>
-            <h2 id="menu-modal-title">菜單</h2>
-            <div id="menu-modal-content"></div>
+                        <div class="status-row">
+                            <span>共 {{ filteredRestaurants.length }} 間餐廳</span>
+                            <span v-if="hasActiveFilters">已套用自訂篩選</span>
+                        </div>
+                    </div>
+                </section>
+
+                <div class="loading-state" v-if="isLoading">
+                    <span class="loading-spinner" aria-hidden="true"></span>
+                    <span>載入餐廳資料中…</span>
+                </div>
+
+                <div class="grid-container" v-else>
+                    <template v-if="filteredRestaurants.length > 0">
+                        <article class="card" v-for="restaurant in filteredRestaurants" :key="restaurant.DetailShortInfo.faciltId">
+                            <div
+                                v-if="getBannerImages(restaurant).length"
+                                class="card-image-gallery"
+                                role="list"
+                                :aria-label="getGalleryAriaLabel(restaurant)"
+                            >
+                                <img
+                                    v-for="(imageUrl, index) in getBannerImages(restaurant)"
+                                    :key="`${restaurant.DetailShortInfo.faciltId}-banner-${index}`"
+                                    :src="imageUrl"
+                                    :alt="`${restaurant.DetailShortInfo.faciltNameCN || '餐廳'} 圖片 ${index + 1}`"
+                                    class="card-img"
+                                    loading="lazy"
+                                    @click="openImageModalFromRestaurant(restaurant, index)"
+                                >
+                                <span
+                                    class="card-image-indicator"
+                                    v-if="getBannerImages(restaurant).length > 1"
+                                >
+                                    <svg aria-hidden="true" focusable="false" viewBox="0 0 24 24">
+                                        <path
+                                            fill="currentColor"
+                                            d="M5 12a1 1 0 0 1 1-1h9.586l-2.293-2.293a1 1 0 1 1 1.414-1.414l4 4a1 1 0 0 1 0 1.414l-4 4a1 1 0 0 1-1.414-1.414L15.586 13H6a1 1 0 0 1-1-1Z"
+                                        />
+                                    </svg>
+                                    <span>可滑動 · {{ getBannerImages(restaurant).length }} 張</span>
+                                </span>
+                            </div>
+                            <img
+                                v-else
+                                src="https://via.placeholder.com/400x220?text=No+Image"
+                                alt="暫無餐廳圖片"
+                                class="card-img card-image-placeholder"
+                                loading="lazy"
+                            >
+                            <div class="card-content">
+                                <h2 class="card-title">{{ restaurant.DetailShortInfo.faciltNameCN || 'N/A' }}</h2>
+                                <div>
+                                    <span
+                                        v-for="id in getFoodTypeIds(restaurant)"
+                                        :key="`food-${restaurant.DetailShortInfo.faciltId}-${id}`"
+                                        class="card-tag"
+                                        :class="`tag-id-${id}`"
+                                        @click="setFoodFilter(id)"
+                                    >{{ getFoodTypeName(id) }}</span>
+                                </div>
+                                <div v-if="restaurant.zoneType">
+                                    <span
+                                        class="card-tag"
+                                        :class="`tag-id-${restaurant.zoneType}`"
+                                        @click="setZoneFilter(restaurant.zoneType)"
+                                    >{{ getZoneTypeName(restaurant.zoneType) }}</span>
+                                </div>
+                                <p class="card-name-eng">{{ restaurant.DetailShortInfo.faciltNameEng || 'N/A' }}</p>
+                                <p class="card-keywords">{{ formatKeywords(restaurant.DetailShortInfo.keywordDescrtCN) }}</p>
+                                <div class="map-buttons">
+                                    <button class="map-button" type="button" @click="openMenuModal(restaurant.DetailShortInfo.faciltId)">檢視菜單</button>
+                                    <div class="map-links" aria-label="地圖連結">
+                                        <a :href="buildGoogleMapUrl(restaurant)" target="_blank" rel="noopener" aria-label="在 Google Maps 開啟">
+                                            <img src="google-maps.png" alt="Google Maps logo" class="map-logo">
+                                        </a>
+                                        <a href="javascript:void(0);" @click.prevent="handleOpenNaverMap(restaurant)" aria-label="在 Naver Map 開啟">
+                                            <img src="naver-map.png" alt="Naver Map logo" class="map-logo">
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </article>
+                    </template>
+                    <p v-else class="empty-state">找不到相符的資訊，請調整搜尋或篩選條件。</p>
+                </div>
+            </template>
+        </div>
+
+        <div
+            id="myModal"
+            class="modal"
+            :class="{ show: imageModalVisible }"
+            @click.self="closeImageModal"
+            role="dialog"
+            aria-modal="true"
+            aria-label="餐廳照片"
+            ref="imageModal"
+            tabindex="-1"
+            @keydown.left.prevent="showPrevModalImage"
+            @keydown.right.prevent="showNextModalImage"
+            @keydown.esc.prevent="closeImageModal"
+        >
+            <span class="close" @click="closeImageModal" aria-label="關閉圖片預覽">&times;</span>
+            <div class="modal-image-wrapper" v-if="imageModalVisible && selectedImageUrl">
+                <button
+                    v-if="modalImages.length > 1"
+                    class="modal-nav modal-nav--prev"
+                    type="button"
+                    aria-label="上一張照片"
+                    :disabled="!hasPrevModalImage"
+                    @click.stop="showPrevModalImage"
+                >
+                    <svg aria-hidden="true" focusable="false" viewBox="0 0 24 24">
+                        <path fill="currentColor" d="m15.41 7.41-1.41-1.41L8.59 11l5.41 5.41 1.41-1.41L11.41 11z" />
+                    </svg>
+                </button>
+                <img
+                    class="modal-content"
+                    id="img01"
+                    :src="selectedImageUrl"
+                    alt="餐廳放大圖"
+                    @touchstart="handleModalTouchStart"
+                    @touchend="handleModalTouchEnd"
+                >
+                <button
+                    v-if="modalImages.length > 1"
+                    class="modal-nav modal-nav--next"
+                    type="button"
+                    aria-label="下一張照片"
+                    :disabled="!hasNextModalImage"
+                    @click.stop="showNextModalImage"
+                >
+                    <svg aria-hidden="true" focusable="false" viewBox="0 0 24 24">
+                        <path fill="currentColor" d="m8.59 16.59 1.41 1.41L15.41 13l-5.41-5.41-1.41 1.41L12.59 13z" />
+                    </svg>
+                </button>
+                <div class="modal-image-counter" v-if="modalImages.length > 1">
+                    {{ modalImageIndex + 1 }} / {{ modalImages.length }}
+                </div>
+            </div>
+        </div>
+
+        <div id="menuModal" class="modal" :class="{ show: menuModalVisible }" @click.self="closeMenuModal" role="dialog" aria-modal="true" aria-labelledby="menu-modal-title">
+            <div class="modal-content-container" v-if="menuModalVisible">
+                <span class="close menu-close" @click="closeMenuModal" aria-label="關閉菜單視窗">&times;</span>
+                <h2 id="menu-modal-title">{{ menuModalTitle }}</h2>
+                <div id="menu-modal-content">
+                    <ul v-if="selectedMenuRestaurant && selectedMenuRestaurant.DetailShortInfo.menuList && selectedMenuRestaurant.DetailShortInfo.menuList.length">
+                        <li v-for="(item, index) in selectedMenuRestaurant.DetailShortInfo.menuList" :key="index">
+                            <img :src="item.menuImagUrl" :alt="item.menuDescrtCN">
+                            <div>
+                                <strong>{{ item.menuDescrtCN }}</strong>
+                                <p class="menu-item-eng">{{ item.menuDescrtEng || '' }}</p>
+                                <p>價格: {{ item.menuPrice }}</p>
+                            </div>
+                        </li>
+                    </ul>
+                    <ul v-else>
+                        <li class="empty-state" style="box-shadow:none;">暫無菜單資訊。</li>
+                    </ul>
+                </div>
+            </div>
         </div>
     </div>
 
-    <script>
-        let allRestaurants = [];
-        let foodTypeMap = new Map();
-        let zoneTypeMap = new Map();
-        let activeFilters = {
-            food: new Set(),
-            zone: null
-        };
-
-        // --- MODAL SETUP ---
-        const imageModal = document.getElementById("myModal");
-        const imageModalImg = document.getElementById("img01");
-        const menuModal = document.getElementById("menuModal");
-        document.querySelector("#myModal .close").onclick = () => imageModal.style.display = "none";
-        document.querySelector("#menuModal .close").onclick = () => menuModal.style.display = "none";
-        window.onclick = function(event) {
-            if (event.target == imageModal) imageModal.style.display = "none";
-            if (event.target == menuModal) menuModal.style.display = "none";
-        }
-
-        // --- DATA FETCHING ---
-        Promise.all([
-            fetch('./mainShortInfo.json').then(res => res.json()),
-            fetch('./faciltFoodType.json').then(res => res.json()),
-            fetch('./zoneKindCd.json').then(res => res.json())
-        ]).then(([mainInfo, foodTypesData, zoneTypesData]) => {
-            allRestaurants = mainInfo;
-            foodTypeMap = new Map(foodTypesData.map(item => [item.codeId, item.codeNameCN]));
-            zoneTypeMap = new Map(zoneTypesData.map(item => [item.codeId, item.codeNameCN]));
-
-            populateFilters(foodTypesData, zoneTypesData);
-            renderCards();
-        })
-        .catch(error => {
-            console.error('Error fetching or processing data:', error);
-            document.getElementById('restaurants-grid').innerHTML = '<p style="color: red; text-align: center;">無法載入資料，請確認所有 JSON 檔案都存在。</p>';
-        });
-
-        // --- UI POPULATION ---
-        function populateFilters(foodTypesData, zoneTypesData) {
-            const foodContainer = document.getElementById('food-type-filters');
-            const zoneContainer = document.getElementById('zone-type-filters');
-            foodContainer.innerHTML = '<span style="margin-right:10px; font-weight:bold; color: white; font-size:1.2rem;">食物:</span>' + foodTypesData.map(type =>
-                `<button class="filter-btn" id="filter-food-${type.codeId}" onclick="toggleFoodFilter('${type.codeId}')">${type.codeNameCN}</button>`
-            ).join('');
-            zoneContainer.innerHTML = '<span style="margin-right:10px; font-weight:bold; color: white; font-size:1.2rem;">區域:</span>' + zoneTypesData.map(type =>
-                `<button class="filter-btn" id="filter-zone-${type.codeId}" onclick="toggleZoneFilter('${type.codeId}')">${type.codeNameCN}</button>`
-            ).join('');
-        }
-
-        // --- RENDERING ---
-        function renderCards() {
-            const grid = document.getElementById('restaurants-grid');
-            grid.innerHTML = ''; // Clear existing cards
-
-            const filteredRestaurants = allRestaurants.filter(item => {
-                const foodMatch = activeFilters.food.size === 0 || (item.foodTypeCds || '').split(',').some(id => activeFilters.food.has(id.trim()));
-                const zoneMatch = !activeFilters.zone || (item.zoneType === activeFilters.zone);
-                return foodMatch && zoneMatch;
-            });
-
-            if (filteredRestaurants.length === 0) {
-                grid.innerHTML = '<p style="text-align: center; grid-column: 1 / -1; font-size: 1.3rem;">找不到相符的資訊。</p>';
-                return;
-            }
-
-            filteredRestaurants.forEach(item => {
-                const card = document.createElement('div');
-                card.className = 'card';
-                const faciltId = item.DetailShortInfo.faciltId;
-
-                const lat = item.DetailShortInfo.locList && item.DetailShortInfo.locList[0] ? item.DetailShortInfo.locList[0].latud : null;
-                const lng = item.DetailShortInfo.locList && item.DetailShortInfo.locList[0] ? item.DetailShortInfo.locList[0].lgtud : null;
-                const faciltNameCN = item.DetailShortInfo.faciltNameCN || 'N/A';
-
-                const googleMapUrl = lat && lng ? `https://www.google.com/maps?q=${lat},${lng}` : '#';
-                const naverMapUrl = lat && lng ? `nmap://place?lat=${lat}&lng=${lng}&name=${encodeURIComponent(faciltNameCN)}&appname=com.max.everland` : '#';
-                const naverMapWebUrl = lat && lng ? `http://map.naver.com/v5/search/${encodeURIComponent(faciltNameCN)}/place/?lat=${lat}&lng=${lng}` : '#';
-
-                // Tags
-                const foodTypeIds = (item.foodTypeCds || '').split(',');
-                let foodTagsHTML = '';
-                if (foodTypeIds.length > 0 && foodTypeIds[0] !== '') {
-                    foodTypeIds.forEach(id => {
-                        const trimmedId = id.trim();
-                        const typeName = foodTypeMap.get(trimmedId) || '未知';
-                        foodTagsHTML += `<span class="card-tag tag-id-${trimmedId}" onclick="setFoodFilter('${trimmedId}')">${typeName}</span>`;
-                    });
-                }
-                const zoneId = item.zoneType;
-                const zoneName = zoneTypeMap.get(zoneId) || '未知區域';
-                const zoneTagHTML = zoneId ? `<span class="card-tag tag-id-${zoneId}" onclick="setZoneFilter('${zoneId}')">${zoneName}</span>` : '';
-
-                const faciltNameEng = item.DetailShortInfo.faciltNameEng || 'N/A';
-                const thumbImagUrl = item.DetailShortInfo.thumbImagUrl || 'https://via.placeholder.com/300x180?text=No+Image';
-                const keywordDescrtCN = item.DetailShortInfo.keywordDescrtCN || '';
-
-                card.innerHTML = `
-                    <img src="${thumbImagUrl}" alt="${faciltNameCN}" class="card-img" onclick="showImage('${thumbImagUrl}')">
-                    <div class="card-content">
-                        <h2 class="card-title">${faciltNameCN}</h2>
-                        <div>${foodTagsHTML}</div>
-                        <div>${zoneTagHTML}</div>
-                        <p class="card-name-eng">${faciltNameEng}</p>
-                        <p class="card-keywords">${keywordDescrtCN.replace(/#/g, ', ')}</p>
-                        <div class="map-buttons">
-                            <button class="map-button" onclick="openMenuModal('${faciltId}')">檢視菜單</button>
-                            <div class="map-links">
-                                <a href="${googleMapUrl}" target="_blank"><img src="google-maps.png" alt="Google Maps" class="map-logo"></a>
-                                <a href="javascript:void(0);" onclick="openNaverMap('${naverMapUrl}', '${naverMapWebUrl}')"><img src="naver-map.png" alt="Naver Map" class="map-logo"></a>
-                            </div>
-                        </div>
-                    </div>
-                `;
-                grid.appendChild(card);
-            });
-        }
-
-        // --- FILTERING LOGIC ---
-        function toggleFoodFilter(foodId) {
-            const btn = document.getElementById(`filter-food-${foodId}`);
-            if (activeFilters.food.has(foodId)) {
-                activeFilters.food.delete(foodId);
-                if(btn) btn.classList.remove('active');
-            } else {
-                activeFilters.food.add(foodId);
-                if(btn) btn.classList.add('active');
-            }
-            renderCards();
-        }
-
-        function toggleZoneFilter(zoneId) {
-            const currentActiveBtn = activeFilters.zone ? document.getElementById(`filter-zone-${activeFilters.zone}`) : null;
-            if (currentActiveBtn) {
-                currentActiveBtn.classList.remove('active');
-            }
-
-            if (activeFilters.zone === zoneId) {
-                activeFilters.zone = null;
-            } else {
-                activeFilters.zone = zoneId;
-                const newActiveBtn = document.getElementById(`filter-zone-${zoneId}`);
-                if(newActiveBtn) newActiveBtn.classList.add('active');
-            }
-            renderCards();
-        }
-        
-        function setFoodFilter(foodId) {
-            activeFilters.food.clear();
-            document.querySelectorAll('#food-type-filters .filter-btn').forEach(b => b.classList.remove('active'));
-            activeFilters.food.add(foodId);
-            const btn = document.getElementById(`filter-food-${foodId}`);
-            if(btn) btn.classList.add('active');
-            renderCards();
-        }
-
-        function setZoneFilter(zoneId) {
-            activeFilters.zone = null; // Reset current zone filter before setting new one
-            toggleZoneFilter(zoneId);
-        }
-
-        // --- HELPERS & MODALS ---
-        function showImage(src) {
-            imageModal.style.display = "block";
-            imageModalImg.src = src;
-        }
-
-        function openMenuModal(faciltId) {
-            const restaurant = allRestaurants.find(r => r.DetailShortInfo.faciltId === faciltId);
-            if (!restaurant) return;
-
-            const titleEl = document.getElementById('menu-modal-title');
-            const contentEl = document.getElementById('menu-modal-content');
-            
-            titleEl.innerText = `${restaurant.DetailShortInfo.faciltNameCN} - 菜單`;
-            
-            let menuHTML = '<ul>';
-            if (restaurant.DetailShortInfo.menuList && restaurant.DetailShortInfo.menuList.length > 0) {
-                restaurant.DetailShortInfo.menuList.forEach(item => {
-                    menuHTML += `
-                        <li>
-                            <img src="${item.menuImagUrl}" alt="${item.menuDescrtCN}">
-                            <div>
-                                <strong>${item.menuDescrtCN}</strong>
-                                <p class="menu-item-eng">${item.menuDescrtEng || ''}</p>
-                                <p>價格: ${item.menuPrice}</p>
-                            </div>
-                        </li>`;
-                });
-            } else {
-                menuHTML += '<li>暫無菜單資訊。</li>';
-            }
-            menuHTML += '</ul>';
-            contentEl.innerHTML = menuHTML;
-
-            menuModal.style.display = 'block';
-        }
-
-        function openNaverMap(url, webUrl) {
-            const start = new Date().getTime();
-            window.location.href = url;
-            setTimeout(() => {
-                const end = new Date().getTime();
-                if (document.hidden || end - start >= 2000) {
-                    return;
-                }
-                window.open(webUrl, '_blank');
-            }, 1500);
-        }
-    </script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+    <script src="./app.js"></script>
 </body>
 </html>
