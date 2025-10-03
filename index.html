@@ -214,14 +214,62 @@
             left: 0;
             width: 100%;
             background-color: #212529;
-            padding: 10px;
+            padding: 12px;
             box-shadow: 0 -2px 5px rgba(0,0,0,0.3);
             z-index: 100;
+            box-sizing: border-box;
+            border-top-left-radius: 16px;
+            border-top-right-radius: 16px;
             display: flex;
             flex-direction: column;
-            gap: 10px;
-            max-height: 25vh;
+        }
+
+        #filter-bar.collapsed {
+            padding-bottom: 12px;
+        }
+
+        #filter-toggle {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.08);
+            color: #f8f9fa;
+            border: none;
+            border-radius: 12px;
+            padding: 10px 14px;
+            font-size: 1.15rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: background 0.2s ease-in-out;
+        }
+
+        #filter-toggle:hover,
+        #filter-toggle:focus {
+            background: rgba(255, 255, 255, 0.16);
+            outline: none;
+        }
+
+        #filter-content {
+            margin-top: 12px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            transition: max-height 0.3s ease, opacity 0.3s ease, margin-top 0.3s ease;
+            max-height: 60vh;
+            opacity: 1;
+        }
+
+        #filter-bar.expanded #filter-content {
             overflow-y: auto;
+        }
+
+        #filter-bar.collapsed #filter-content {
+            max-height: 0;
+            opacity: 0;
+            margin-top: 0;
+            overflow: hidden;
         }
 
         .filter-section {
@@ -255,9 +303,15 @@
         <!-- Cards will be injected here by JavaScript -->
     </div>
 
-    <div id="filter-bar">
-        <div class="filter-section" id="food-type-filters"></div>
-        <div class="filter-section" id="zone-type-filters"></div>
+    <div id="filter-bar" class="expanded">
+        <button id="filter-toggle" type="button" aria-expanded="true" aria-controls="filter-content">
+            <span class="toggle-label">隱藏搜尋條件</span>
+            <span class="toggle-icon">▲</span>
+        </button>
+        <div id="filter-content">
+            <div class="filter-section" id="food-type-filters"></div>
+            <div class="filter-section" id="zone-type-filters"></div>
+        </div>
     </div>
 
     <div id="myModal" class="modal">
@@ -291,6 +345,40 @@
         window.onclick = function(event) {
             if (event.target == imageModal) imageModal.style.display = "none";
             if (event.target == menuModal) menuModal.style.display = "none";
+        }
+
+        const filterBar = document.getElementById('filter-bar');
+        const filterToggle = document.getElementById('filter-toggle');
+        const toggleLabel = filterToggle.querySelector('.toggle-label');
+        const toggleIcon = filterToggle.querySelector('.toggle-icon');
+        const mobileMediaQuery = window.matchMedia('(max-width: 768px)');
+
+        function setFilterBarState(expanded) {
+            filterBar.classList.toggle('expanded', expanded);
+            filterBar.classList.toggle('collapsed', !expanded);
+            filterToggle.setAttribute('aria-expanded', expanded);
+            toggleLabel.textContent = expanded ? '隱藏搜尋條件' : '顯示搜尋條件';
+            toggleIcon.textContent = expanded ? '▲' : '▼';
+        }
+
+        function handleViewportChange(event) {
+            if (event.matches) {
+                setFilterBarState(false);
+            } else {
+                setFilterBarState(true);
+            }
+        }
+
+        filterToggle.addEventListener('click', () => {
+            const shouldExpand = !filterBar.classList.contains('expanded');
+            setFilterBarState(shouldExpand);
+        });
+
+        handleViewportChange(mobileMediaQuery);
+        if (typeof mobileMediaQuery.addEventListener === 'function') {
+            mobileMediaQuery.addEventListener('change', handleViewportChange);
+        } else if (typeof mobileMediaQuery.addListener === 'function') {
+            mobileMediaQuery.addListener(handleViewportChange);
         }
 
         // --- DATA FETCHING ---
