@@ -78,6 +78,7 @@
         }
     },
     {
+        "Code": "178",
         "FoodTypeListStringCN": "西式",
         "FoodTypeListStringEng": "Western Food",
         "foodTypeCds": "03",
@@ -89,7 +90,7 @@
             "faciltId": "H100V05019",
             "faciltName": "홀랜드 빌리지",
             "faciltNameEng": "Holland Village",
-            "faciltNameCN": null,
+            "faciltNameCN": "荷蘭村",
             "time": "12:00 - 21:50",
             "lastOrderTime": "21:20",
             "mobileOrderYn": "N",
@@ -165,6 +166,7 @@
         }
     },
     {
+        "Code": "194",
         "FoodTypeListStringCN": "其他",
         "FoodTypeListStringEng": "Others",
         "foodTypeCds": "07",
@@ -176,7 +178,7 @@
             "faciltId": "H100V05133",
             "faciltName": "포메인",
             "faciltNameEng": "Phomein",
-            "faciltNameCN": "越式河粉",
+            "faciltNameCN": "PhoMein",
             "time": "10:30 - 21:20",
             "lastOrderTime": "21:00",
             "mobileOrderYn": "N",
@@ -327,6 +329,7 @@
         }
     },
     {
+        "Code": "25",
         "FoodTypeListStringCN": "咖啡",
         "FoodTypeListStringEng": "Cafe",
         "foodTypeCds": "06",
@@ -411,6 +414,7 @@
         }
     },
     {
+        "Code": "23",
         "FoodTypeListStringCN": "咖啡",
         "FoodTypeListStringEng": "Cafe",
         "foodTypeCds": "06",
@@ -422,7 +426,7 @@
             "faciltId": "H100V01034",
             "faciltName": "라운지엑스",
             "faciltNameEng": "Lounge X",
-            "faciltNameCN": "拉雅特克斯",
+            "faciltNameCN": "威尼斯甜點咖啡館",
             "time": "10:00 - 21:30",
             "lastOrderTime": "",
             "mobileOrderYn": "N",
@@ -495,6 +499,7 @@
         }
     },
     {
+        "Code": "67",
         "FoodTypeListStringCN": "點心",
         "FoodTypeListStringEng": "Snacks",
         "foodTypeCds": "05",
@@ -573,6 +578,7 @@
         }
     },
     {
+        "Code": "3",
         "FoodTypeListStringCN": "咖啡",
         "FoodTypeListStringEng": "Cafe",
         "foodTypeCds": "06",
@@ -584,7 +590,7 @@
             "faciltId": "H100V01044",
             "faciltName": "폴바셋 에버랜드점",
             "faciltNameEng": "Paul Bassett",
-            "faciltNameCN": "保羅·巴塞特",
+            "faciltNameCN": "Paul Bassett",
             "time": "10:00 - 21:30",
             "lastOrderTime": "",
             "mobileOrderYn": "N",
@@ -654,6 +660,7 @@
         }
     },
     {
+        "Code": "230",
         "FoodTypeListStringCN": "點心",
         "FoodTypeListStringEng": "Snacks",
         "foodTypeCds": "05",
@@ -664,8 +671,8 @@
         "DetailShortInfo": {
             "faciltId": "H100V05177",
             "faciltName": "55츄 (라피아자)",
-            "faciltNameEng": "55 Chu (Rafias)",
-            "faciltNameCN": "55啾（拉菲亞斯）",
+            "faciltNameEng": "55Chu",
+            "faciltNameCN": "迷失山穀小吃",
             "time": "11:00 - 21:10",
             "lastOrderTime": "",
             "mobileOrderYn": "N",
@@ -738,6 +745,7 @@
         }
     },
     {
+        "Code": "189",
         "FoodTypeListStringCN": "點心",
         "FoodTypeListStringEng": "Snacks",
         "foodTypeCds": "05",
@@ -748,8 +756,8 @@
         "DetailShortInfo": {
             "faciltId": "H100V05180",
             "faciltName": "BBQ",
-            "faciltNameEng": "BBQ",
-            "faciltNameCN": null,
+            "faciltNameEng": "BBQ Chicken",
+            "faciltNameCN": "BBQ韓式炸雞",
             "time": "10:00 - 21:30",
             "lastOrderTime": "",
             "mobileOrderYn": "N",
@@ -816,6 +824,7 @@
         }
     },
     {
+        "Code": "185",
         "FoodTypeListStringCN": "點心",
         "FoodTypeListStringEng": "Snacks",
         "foodTypeCds": "05",
@@ -826,8 +835,8 @@
         "DetailShortInfo": {
             "faciltId": "H100V05024",
             "faciltName": "스낵 버스터",
-            "faciltNameEng": "Snack Busters",
-            "faciltNameCN": "小吃暴君",
+            "faciltNameEng": "Snack Buster",
+            "faciltNameCN": "速食破壞者",
             "time": "11:30 - 20:20",
             "lastOrderTime": "19:50",
             "mobileOrderYn": "N",
@@ -981,6 +990,7 @@
         }
     },
     {
+        "Code": "187",
         "FoodTypeListStringCN": "韓式",
         "FoodTypeListStringEng": "Korean Food",
         "foodTypeCds": "01",
@@ -992,7 +1002,7 @@
             "faciltId": "H100V05026",
             "faciltName": "알파인 레스토랑",
             "faciltNameEng": "Alpine Food Fair",
-            "faciltNameCN": "阿爾卑斯餐廳",
+            "faciltNameCN": "Alpine餐廳",
             "time": "11:30 - 19:00",
             "lastOrderTime": "18:30",
             "mobileOrderYn": "N",
@@ -1065,6 +1075,7 @@
         }
     },
     {
+        "Code": "177",
         "FoodTypeListStringCN": "西式",
         "FoodTypeListStringEng": "Western Food",
         "foodTypeCds": "03",
@@ -1075,8 +1086,8 @@
         "DetailShortInfo": {
             "faciltId": "H100V05087",
             "faciltName": "쿠치나 마리오",
-            "faciltNameEng": "Cucina Mario(Lunch)",
-            "faciltNameCN": "庫丘娜瑪利歐",
+            "faciltNameEng": "Cucina Mario",
+            "faciltNameCN": "馬里奧的廚房",
             "time": "11:30 - 20:30",
             "lastOrderTime": "20:00",
             "mobileOrderYn": "Y",
@@ -1152,6 +1163,7 @@
         }
     },
     {
+        "Code": "183",
         "FoodTypeListStringCN": "韓式",
         "FoodTypeListStringEng": "Korean Food",
         "foodTypeCds": "01",
@@ -1163,7 +1175,7 @@
             "faciltId": "H100V05023",
             "faciltName": "한가람",
             "faciltNameEng": "Han-ga-ram",
-            "faciltNameCN": "韓加拉姆",
+            "faciltNameCN": "한가람韓嘉蘭韓式餐廳",
             "time": "11:30 - 20:30",
             "lastOrderTime": "20:00",
             "mobileOrderYn": "N",
@@ -1220,6 +1232,7 @@
         }
     },
     {
+        "Code": "70",
         "FoodTypeListStringCN": "點心",
         "FoodTypeListStringEng": "Snacks",
         "foodTypeCds": "05",
@@ -1611,6 +1624,7 @@
         }
     },
     {
+        "Code": "233",
         "FoodTypeListStringCN": "咖啡",
         "FoodTypeListStringEng": "Cafe",
         "foodTypeCds": "06",
@@ -1622,7 +1636,7 @@
             "faciltId": "H100V06076",
             "faciltName": "판다월드 카페",
             "faciltNameEng": "Panda World Cafe",
-            "faciltNameCN": "潘達世界 咖啡廳",
+            "faciltNameCN": "Dal.komm咖啡",
             "time": "10:00 - 17:10",
             "lastOrderTime": "17:00",
             "mobileOrderYn": "N",
@@ -1776,6 +1790,7 @@
         }
     },
     {
+        "Code": "137",
         "FoodTypeListStringCN": "其他",
         "FoodTypeListStringEng": "Others",
         "foodTypeCds": "07",
@@ -1786,8 +1801,8 @@
         "DetailShortInfo": {
             "faciltId": "H100V03028",
             "faciltName": "타운즈 마켓 레스토랑",
-            "faciltNameEng": "Town’s Market Restaurant",
-            "faciltNameCN": "特拉羅薩",
+            "faciltNameEng": "Town's Market Restaurant",
+            "faciltNameCN": "小鎮超市餐廳",
             "time": "11:30 - 19:40",
             "lastOrderTime": "19:10",
             "mobileOrderYn": "N",
@@ -1863,6 +1878,7 @@
         }
     },
     {
+        "Code": "176",
         "FoodTypeListStringCN": "西式,點心,咖啡",
         "FoodTypeListStringEng": "Western Food,Snacks,Cafe",
         "foodTypeCds": "05,03,06",
@@ -1874,7 +1890,7 @@
             "faciltId": "H100V05016",
             "faciltName": "가든 테라스",
             "faciltNameEng": "Garden Terrace",
-            "faciltNameCN": "花園露台",
+            "faciltNameCN": "庭院陽臺",
             "time": " - ",
             "lastOrderTime": "",
             "mobileOrderYn": "N",
@@ -2031,6 +2047,7 @@
         }
     },
     {
+        "Code": "184",
         "FoodTypeListStringCN": "韓式,中式,點心",
         "FoodTypeListStringEng": "Korean Food,Chinese Food,Snacks",
         "foodTypeCds": "01,02,05",
@@ -2042,7 +2059,7 @@
             "faciltId": "H100V05022",
             "faciltName": "매직타임 레스토랑",
             "faciltNameEng": "Magic Time Restaurant",
-            "faciltNameCN": "魔法時間餐廳",
+            "faciltNameCN": "夢幻時間餐飲",
             "time": "11:30 - 20:30",
             "lastOrderTime": "20:00",
             "mobileOrderYn": "N",
@@ -2110,6 +2127,7 @@
         }
     },
     {
+        "Code": "186",
         "FoodTypeListStringCN": "西式",
         "FoodTypeListStringEng": "Western Food",
         "foodTypeCds": "03",
@@ -2121,7 +2139,7 @@
             "faciltId": "H100V05025",
             "faciltName": "알프스 쿠체",
             "faciltNameEng": "Alps Kuche",
-            "faciltNameCN": "阿爾卑斯庫切",
+            "faciltNameCN": "Alps Kuche",
             "time": "11:30 - 19:30",
             "lastOrderTime": "19:00",
             "mobileOrderYn": "Y",
@@ -2194,6 +2212,7 @@
         }
     },
     {
+        "Code": "24",
         "FoodTypeListStringCN": "韓式,西式",
         "FoodTypeListStringEng": "Korean Food,Western Food",
         "foodTypeCds": "01,03",
@@ -2204,8 +2223,8 @@
         "DetailShortInfo": {
             "faciltId": "H100V01012",
             "faciltName": "오리엔탈 스테이션",
-            "faciltNameEng": "Oriental Station",
-            "faciltNameCN": "東方站",
+            "faciltNameEng": "Oriental Station (Oriental Noodle)",
+            "faciltNameCN": "東方麵條",
             "time": "11:00 - 21:00",
             "lastOrderTime": "20:30",
             "mobileOrderYn": "Y",
@@ -2278,6 +2297,7 @@
         }
     },
     {
+        "Code": "227",
         "FoodTypeListStringCN": "速食,點心,咖啡",
         "FoodTypeListStringEng": "Fast Food,Snacks,Cafe",
         "foodTypeCds": "05,04,06",
@@ -2288,8 +2308,8 @@
         "DetailShortInfo": {
             "faciltId": "H100V06016",
             "faciltName": "카페 정글캠프",
-            "faciltNameEng": "Cafe Jungle Camp",
-            "faciltNameCN": "叢林營地咖啡廳",
+            "faciltNameEng": "Caf'e Jungle Camp",
+            "faciltNameCN": "雨林野營咖啡館",
             "time": " - ",
             "lastOrderTime": "",
             "mobileOrderYn": "N",
@@ -2440,6 +2460,7 @@
         }
     },
     {
+        "Code": "182",
         "FoodTypeListStringCN": "速食,點心",
         "FoodTypeListStringEng": "Fast Food,Snacks",
         "foodTypeCds": "05,04",
@@ -2450,7 +2471,7 @@
         "DetailShortInfo": {
             "faciltId": "H100V05021",
             "faciltName": "버거카페 유럽",
-            "faciltNameEng": "Burger Cafe Europe",
+            "faciltNameEng": "Burger Caf'e Europe",
             "faciltNameCN": "歐洲漢堡咖啡",
             "time": "11:30 - 20:00",
             "lastOrderTime": "19:40",
@@ -2524,6 +2545,7 @@
         }
     },
     {
+        "Code": "68",
         "FoodTypeListStringCN": "速食,點心",
         "FoodTypeListStringEng": "Fast Food,Snacks",
         "foodTypeCds": "04,05",
@@ -2535,7 +2557,7 @@
             "faciltId": "H100V02012",
             "faciltName": "버거카페 아메리카",
             "faciltNameEng": "Burger Cafe America",
-            "faciltNameCN": "美國漢堡咖啡",
+            "faciltNameCN": "美式漢堡咖啡廳",
             "time": "11:00 - 18:20",
             "lastOrderTime": "18:00",
             "mobileOrderYn": "N",
@@ -2605,6 +2627,7 @@
         }
     },
     {
+        "Code": "197",
         "FoodTypeListStringCN": "點心,咖啡",
         "FoodTypeListStringEng": "Snacks,Cafe",
         "foodTypeCds": "06,05",
@@ -2615,7 +2638,7 @@
         "DetailShortInfo": {
             "faciltId": "H100V05111",
             "faciltName": "커피빈",
-            "faciltNameEng": "coffee bean",
+            "faciltNameEng": "The Coffee Bean & Tea leaf",
             "faciltNameCN": "咖啡豆",
             "time": "10:30 - 21:00",
             "lastOrderTime": "20:40",
@@ -2689,6 +2712,7 @@
         }
     },
     {
+        "Code": "139",
         "FoodTypeListStringCN": "點心",
         "FoodTypeListStringEng": "Snacks",
         "foodTypeCds": "05",
@@ -2699,8 +2723,8 @@
         "DetailShortInfo": {
             "faciltId": "H100V03030",
             "faciltName": "멀린스 스낵",
-            "faciltNameEng": "Merlin’s Snack",
-            "faciltNameCN": "梅林的零食",
+            "faciltNameEng": "Merlin's Snack",
+            "faciltNameCN": "馬林斯小吃",
             "time": "10:30 - 18:30",
             "lastOrderTime": "",
             "mobileOrderYn": "N",
@@ -2767,6 +2791,7 @@
         }
     },
     {
+        "Code": "228",
         "FoodTypeListStringCN": "點心",
         "FoodTypeListStringEng": "Snacks",
         "foodTypeCds": "05",
@@ -2777,7 +2802,7 @@
         "DetailShortInfo": {
             "faciltId": "H100V06025",
             "faciltName": "아마존 스낵",
-            "faciltNameEng": "Amazon snack",
+            "faciltNameEng": "Amazon Snack",
             "faciltNameCN": "亞馬遜小吃",
             "time": "10:30 - 19:00",
             "lastOrderTime": "",
@@ -2837,6 +2862,7 @@
         }
     },
     {
+        "Code": "20",
         "FoodTypeListStringCN": "韓式",
         "FoodTypeListStringEng": "Korean Food",
         "foodTypeCds": "01",
@@ -2848,7 +2874,7 @@
             "faciltId": "H100V01042",
             "faciltName": "한와담 소반",
             "faciltNameEng": "Hanwadam",
-            "faciltNameCN": "韓和談 套餐",
+            "faciltNameCN": "韓和談小飯",
             "time": "11:00 - 21:00",
             "lastOrderTime": "20:30",
             "mobileOrderYn": "N",
@@ -2921,6 +2947,7 @@
         }
     },
     {
+        "Code": "19",
         "FoodTypeListStringCN": "西式",
         "FoodTypeListStringEng": "Western Food",
         "foodTypeCds": "03",
@@ -2931,8 +2958,8 @@
         "DetailShortInfo": {
             "faciltId": "H100V01041",
             "faciltName": "온더보더",
-            "faciltNameEng": "On the Border",
-            "faciltNameCN": "墨西哥邊境",
+            "faciltNameEng": "On the Boarder",
+            "faciltNameCN": "On the Boarder",
             "time": "10:00 - 21:00",
             "lastOrderTime": "",
             "mobileOrderYn": "N",
@@ -3005,6 +3032,7 @@
         }
     },
     {
+        "Code": "17",
         "FoodTypeListStringCN": "中式",
         "FoodTypeListStringEng": "Chinese Food",
         "foodTypeCds": "02",
@@ -3086,6 +3114,7 @@
         }
     },
     {
+        "Code": "6",
         "FoodTypeListStringCN": "西式",
         "FoodTypeListStringEng": "Western Food",
         "foodTypeCds": "03",
@@ -3097,7 +3126,7 @@
             "faciltId": "H100V01045",
             "faciltName": "PIZZA IL FORNO",
             "faciltNameEng": "PIZZA IL FORNO",
-            "faciltNameCN": "披薩伊爾福諾",
+            "faciltNameCN": "PIZZA IL FORNO",
             "time": "10:30 - 21:00",
             "lastOrderTime": "20:30",
             "mobileOrderYn": "N",
@@ -3251,6 +3280,7 @@
         }
     },
     {
+        "Code": "188",
         "FoodTypeListStringCN": "點心",
         "FoodTypeListStringEng": "Snacks",
         "foodTypeCds": "05",
@@ -3261,8 +3291,8 @@
         "DetailShortInfo": {
             "faciltId": "H100V05178",
             "faciltName": "앤티앤스 (라피아자)",
-            "faciltNameEng": "Auntie Anne's (Lafias)",
-            "faciltNameCN": "安提安斯 (拉皮亞薩)",
+            "faciltNameEng": "Auntie Anne's Pretzel",
+            "faciltNameCN": "復古噴霧",
             "time": "11:00 - 21:00",
             "lastOrderTime": "",
             "mobileOrderYn": "N",
@@ -3332,6 +3362,7 @@
         }
     },
     {
+        "Code": "180",
         "FoodTypeListStringCN": "中式",
         "FoodTypeListStringEng": "Chinese Food",
         "foodTypeCds": "02",
@@ -3343,7 +3374,7 @@
             "faciltId": "H100V05020",
             "faciltName": "차이나문",
             "faciltNameEng": "China Moon",
-            "faciltNameCN": "中國門",
+            "faciltNameCN": "China Moon中式餐廳",
             "time": "11:30 - 21:00",
             "lastOrderTime": "20:40",
             "mobileOrderYn": "N",
