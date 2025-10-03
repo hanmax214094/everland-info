@@ -123,6 +123,25 @@ createApp({
         getFoodTypeIds(restaurant) {
             return (restaurant.foodTypeCds || '').split(',').map(id => id.trim()).filter(Boolean);
         },
+        getBannerImages(restaurant) {
+            if (!restaurant || !restaurant.DetailShortInfo) {
+                return [];
+            }
+
+            const banners = restaurant.DetailShortInfo.bannerImgUrl || [];
+
+            return banners
+                .map(item => {
+                    if (typeof item === 'string') {
+                        return item;
+                    }
+                    if (item && typeof item.bannerImgUrl === 'string') {
+                        return item.bannerImgUrl;
+                    }
+                    return null;
+                })
+                .filter(url => typeof url === 'string' && url.trim().length > 0);
+        },
         getFoodTypeName(id) {
             return this.foodTypeMap[id] || '未知';
         },
