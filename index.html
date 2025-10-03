@@ -283,11 +283,49 @@
             box-shadow: 0 24px 45px rgba(31, 42, 68, 0.18);
         }
 
+        .card-image-gallery {
+            display: flex;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            scroll-behavior: smooth;
+            gap: 0;
+            background: var(--surface-alt);
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .card-image-gallery::-webkit-scrollbar {
+            height: 6px;
+        }
+
+        .card-image-gallery::-webkit-scrollbar-thumb {
+            background: rgba(92, 107, 242, 0.4);
+            border-radius: 999px;
+        }
+
+        .card-image-gallery::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
         .card-img {
             width: 100%;
             height: 190px;
             object-fit: cover;
             cursor: pointer;
+            flex-shrink: 0;
+            scroll-snap-align: center;
+            border-radius: var(--border-radius) var(--border-radius) 0 0;
+        }
+
+        .card-image-gallery .card-img + .card-img {
+            margin-left: 0;
+        }
+
+        .card-image-placeholder {
+            background: var(--surface-alt);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: default;
         }
 
         .card-content {
@@ -713,12 +751,28 @@
                 <div class="grid-container" v-else>
                     <template v-if="filteredRestaurants.length > 0">
                         <article class="card" v-for="restaurant in filteredRestaurants" :key="restaurant.DetailShortInfo.faciltId">
+                            <div
+                                v-if="getBannerImages(restaurant).length"
+                                class="card-image-gallery"
+                                role="list"
+                                aria-label="餐廳照片"
+                            >
+                                <img
+                                    v-for="(imageUrl, index) in getBannerImages(restaurant)"
+                                    :key="`${restaurant.DetailShortInfo.faciltId}-banner-${index}`"
+                                    :src="imageUrl"
+                                    :alt="`${restaurant.DetailShortInfo.faciltNameCN || '餐廳'} 圖片 ${index + 1}`"
+                                    class="card-img"
+                                    loading="lazy"
+                                    @click="openImageModal(imageUrl)"
+                                >
+                            </div>
                             <img
-                                :src="restaurant.DetailShortInfo.thumbImagUrl || 'https://via.placeholder.com/400x220?text=No+Image'"
-                                :alt="restaurant.DetailShortInfo.faciltNameCN || '無圖片'"
-                                class="card-img"
+                                v-else
+                                src="https://via.placeholder.com/400x220?text=No+Image"
+                                alt="暫無餐廳圖片"
+                                class="card-img card-image-placeholder"
                                 loading="lazy"
-                                @click="openImageModal(restaurant.DetailShortInfo.thumbImagUrl || 'https://via.placeholder.com/400x220?text=No+Image')"
                             >
                             <div class="card-content">
                                 <h2 class="card-title">{{ restaurant.DetailShortInfo.faciltNameCN || 'N/A' }}</h2>
