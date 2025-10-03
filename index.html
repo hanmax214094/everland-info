@@ -291,6 +291,7 @@
             gap: 0;
             background: var(--surface-alt);
             -webkit-overflow-scrolling: touch;
+            position: relative;
         }
 
         .card-image-gallery::-webkit-scrollbar {
@@ -304,6 +305,29 @@
 
         .card-image-gallery::-webkit-scrollbar-track {
             background: transparent;
+        }
+
+        .card-image-indicator {
+            position: absolute;
+            right: 16px;
+            bottom: 16px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 999px;
+            background: rgba(31, 42, 68, 0.76);
+            color: #fff;
+            font-size: 0.82rem;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+            pointer-events: none;
+            box-shadow: 0 12px 24px rgba(31, 42, 68, 0.18);
+        }
+
+        .card-image-indicator svg {
+            width: 14px;
+            height: 14px;
         }
 
         .card-img {
@@ -529,12 +553,84 @@
             font-weight: 700;
         }
 
+        #myModal .modal-image-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 40px auto 0;
+            width: min(90vw, 760px);
+        }
+
         #myModal .modal-content {
             display: block;
-            margin: 40px auto;
             width: min(90vw, 640px);
+            max-height: 70vh;
+            margin: 0 auto;
             border-radius: 24px;
             box-shadow: var(--shadow);
+            object-fit: contain;
+        }
+
+        .modal-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 48px;
+            height: 48px;
+            border: none;
+            border-radius: 50%;
+            background: rgba(15, 25, 60, 0.65);
+            color: #fff;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background 0.2s ease, transform 0.2s ease;
+        }
+
+        .modal-nav svg {
+            width: 22px;
+            height: 22px;
+        }
+
+        .modal-nav:disabled {
+            opacity: 0.4;
+            cursor: default;
+            pointer-events: none;
+        }
+
+        .modal-nav:not(:disabled):hover,
+        .modal-nav:not(:disabled):focus {
+            background: rgba(15, 25, 60, 0.85);
+            transform: translateY(-50%) scale(1.05);
+        }
+
+        .modal-nav:not(:disabled):focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(92, 107, 242, 0.35);
+        }
+
+        .modal-nav--prev {
+            left: 12px;
+        }
+
+        .modal-nav--next {
+            right: 12px;
+        }
+
+        .modal-image-counter {
+            position: absolute;
+            bottom: 16px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(15, 25, 60, 0.75);
+            color: #fff;
+            padding: 6px 12px;
+            border-radius: 999px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            letter-spacing: 0.03em;
         }
 
         #myModal .close {
@@ -627,6 +723,31 @@
             .map-links {
                 gap: 10px;
             }
+
+            #myModal .modal-image-wrapper {
+                margin-top: 24px;
+                width: 100%;
+            }
+
+            #myModal .modal-content {
+                width: 100%;
+                max-height: 60vh;
+            }
+
+            .modal-nav {
+                width: 40px;
+                height: 40px;
+            }
+
+            .modal-nav svg {
+                width: 18px;
+                height: 18px;
+            }
+
+            .modal-image-counter {
+                bottom: 12px;
+                font-size: 0.82rem;
+            }
         }
 
         @media (max-width: 480px) {
@@ -650,6 +771,16 @@
 
             .map-links {
                 margin-left: 0;
+            }
+
+            .modal-nav {
+                width: 36px;
+                height: 36px;
+            }
+
+            .modal-image-counter {
+                font-size: 0.75rem;
+                padding: 4px 10px;
             }
         }
     </style>
@@ -755,7 +886,7 @@
                                 v-if="getBannerImages(restaurant).length"
                                 class="card-image-gallery"
                                 role="list"
-                                aria-label="餐廳照片"
+                                :aria-label="getGalleryAriaLabel(restaurant)"
                             >
                                 <img
                                     v-for="(imageUrl, index) in getBannerImages(restaurant)"
@@ -764,8 +895,20 @@
                                     :alt="`${restaurant.DetailShortInfo.faciltNameCN || '餐廳'} 圖片 ${index + 1}`"
                                     class="card-img"
                                     loading="lazy"
-                                    @click="openImageModal(imageUrl)"
+                                    @click="openImageModalFromRestaurant(restaurant, index)"
                                 >
+                                <span
+                                    class="card-image-indicator"
+                                    v-if="getBannerImages(restaurant).length > 1"
+                                >
+                                    <svg aria-hidden="true" focusable="false" viewBox="0 0 24 24">
+                                        <path
+                                            fill="currentColor"
+                                            d="M5 12a1 1 0 0 1 1-1h9.586l-2.293-2.293a1 1 0 1 1 1.414-1.414l4 4a1 1 0 0 1 0 1.414l-4 4a1 1 0 0 1-1.414-1.414L15.586 13H6a1 1 0 0 1-1-1Z"
+                                        />
+                                    </svg>
+                                    <span>可滑動 · {{ getBannerImages(restaurant).length }} 張</span>
+                                </span>
                             </div>
                             <img
                                 v-else
@@ -813,9 +956,58 @@
             </template>
         </div>
 
-        <div id="myModal" class="modal" :class="{ show: imageModalVisible }" @click.self="closeImageModal" role="dialog" aria-modal="true" aria-label="餐廳照片">
+        <div
+            id="myModal"
+            class="modal"
+            :class="{ show: imageModalVisible }"
+            @click.self="closeImageModal"
+            role="dialog"
+            aria-modal="true"
+            aria-label="餐廳照片"
+            ref="imageModal"
+            tabindex="-1"
+            @keydown.left.prevent="showPrevModalImage"
+            @keydown.right.prevent="showNextModalImage"
+            @keydown.esc.prevent="closeImageModal"
+        >
             <span class="close" @click="closeImageModal" aria-label="關閉圖片預覽">&times;</span>
-            <img class="modal-content" id="img01" :src="selectedImageUrl" v-if="imageModalVisible" alt="餐廳放大圖">
+            <div class="modal-image-wrapper" v-if="imageModalVisible && selectedImageUrl">
+                <button
+                    v-if="modalImages.length > 1"
+                    class="modal-nav modal-nav--prev"
+                    type="button"
+                    aria-label="上一張照片"
+                    :disabled="!hasPrevModalImage"
+                    @click.stop="showPrevModalImage"
+                >
+                    <svg aria-hidden="true" focusable="false" viewBox="0 0 24 24">
+                        <path fill="currentColor" d="m15.41 7.41-1.41-1.41L8.59 11l5.41 5.41 1.41-1.41L11.41 11z" />
+                    </svg>
+                </button>
+                <img
+                    class="modal-content"
+                    id="img01"
+                    :src="selectedImageUrl"
+                    alt="餐廳放大圖"
+                    @touchstart="handleModalTouchStart"
+                    @touchend="handleModalTouchEnd"
+                >
+                <button
+                    v-if="modalImages.length > 1"
+                    class="modal-nav modal-nav--next"
+                    type="button"
+                    aria-label="下一張照片"
+                    :disabled="!hasNextModalImage"
+                    @click.stop="showNextModalImage"
+                >
+                    <svg aria-hidden="true" focusable="false" viewBox="0 0 24 24">
+                        <path fill="currentColor" d="m8.59 16.59 1.41 1.41L15.41 13l-5.41-5.41-1.41 1.41L12.59 13z" />
+                    </svg>
+                </button>
+                <div class="modal-image-counter" v-if="modalImages.length > 1">
+                    {{ modalImageIndex + 1 }} / {{ modalImages.length }}
+                </div>
+            </div>
         </div>
 
         <div id="menuModal" class="modal" :class="{ show: menuModalVisible }" @click.self="closeMenuModal" role="dialog" aria-modal="true" aria-labelledby="menu-modal-title">
