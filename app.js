@@ -12,6 +12,8 @@ createApp({
                 food: [],
                 zone: null
             },
+            searchQuery: '',
+            isLoading: true,
             imageModalVisible: false,
             selectedImageUrl: '',
             menuModalVisible: false,
@@ -25,11 +27,15 @@ createApp({
                 return [];
             }
 
+            const keyword = this.searchQuery.trim().toLowerCase();
+
             return this.allRestaurants.filter(item => {
                 const foodTypes = (item.foodTypeCds || '').split(',').map(id => id.trim()).filter(Boolean);
                 const zoneMatch = !this.filters.zone || item.zoneType === this.filters.zone;
                 const foodMatch = this.filters.food.length === 0 || foodTypes.some(id => this.filters.food.includes(id));
-                return foodMatch && zoneMatch;
+                const searchMatch = this.matchesSearch(item, keyword);
+
+                return foodMatch && zoneMatch && searchMatch;
             });
         },
         menuModalTitle() {
@@ -37,6 +43,9 @@ createApp({
                 return '菜單';
             }
             return `${this.selectedMenuRestaurant.DetailShortInfo.faciltNameCN || 'N/A'} - 菜單`;
+        },
+        hasActiveFilters() {
+            return this.filters.food.length > 0 || !!this.filters.zone || !!this.searchQuery;
         }
     },
     methods: {
@@ -56,7 +65,25 @@ createApp({
             } catch (error) {
                 console.error('Error fetching or processing data:', error);
                 this.errorMessage = '無法載入資料，請確認所有 JSON 檔案都存在。';
+            } finally {
+                this.isLoading = false;
             }
+        },
+        matchesSearch(restaurant, keyword) {
+            if (!keyword) {
+                return true;
+            }
+
+            const { DetailShortInfo } = restaurant;
+            const nameCn = (DetailShortInfo.faciltNameCN || '').toLowerCase();
+            const nameEng = (DetailShortInfo.faciltNameEng || '').toLowerCase();
+            const keywords = (DetailShortInfo.keywordDescrtCN || '').toLowerCase();
+
+            const menuTexts = (DetailShortInfo.menuList || [])
+                .map(item => `${item.menuDescrtCN || ''} ${item.menuDescrtEng || ''}`.toLowerCase())
+                .join(' ');
+
+            return [nameCn, nameEng, keywords, menuTexts].some(text => text.includes(keyword));
         },
         getFoodTypeIds(restaurant) {
             return (restaurant.foodTypeCds || '').split(',').map(id => id.trim()).filter(Boolean);
@@ -95,6 +122,11 @@ createApp({
         },
         setZoneFilter(zoneId) {
             this.filters.zone = zoneId;
+        },
+        clearFilters() {
+            this.filters.food = [];
+            this.filters.zone = null;
+            this.searchQuery = '';
         },
         buildGoogleMapUrl(restaurant) {
             const loc = restaurant.DetailShortInfo.locList && restaurant.DetailShortInfo.locList[0];
