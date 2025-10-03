@@ -18,6 +18,9 @@ createApp({
             isLoading: true,
             imageModalVisible: false,
             selectedImageUrl: '',
+            modalImages: [],
+            modalImageIndex: 0,
+            modalTouchStartX: null,
             menuModalVisible: false,
             selectedMenuRestaurant: null,
             errorMessage: ''
@@ -81,6 +84,15 @@ createApp({
             }
 
             return summaryParts.join(' ｜ ');
+        },
+        hasPrevModalImage() {
+            return this.modalImages.length > 1 && this.modalImageIndex > 0;
+        },
+        hasNextModalImage() {
+            return (
+                this.modalImages.length > 1 &&
+                this.modalImageIndex < this.modalImages.length - 1
+            );
         }
     },
     methods: {
@@ -141,6 +153,19 @@ createApp({
                     return null;
                 })
                 .filter(url => typeof url === 'string' && url.trim().length > 0);
+        },
+        getGalleryAriaLabel(restaurant) {
+            const count = this.getBannerImages(restaurant).length;
+
+            if (count > 1) {
+                return `餐廳照片，共 ${count} 張，可左右滑動瀏覽`;
+            }
+
+            if (count === 1) {
+                return '餐廳照片，共 1 張';
+            }
+
+            return '餐廳照片';
         },
         getFoodTypeName(id) {
             return this.foodTypeMap[id] || '未知';
@@ -235,13 +260,88 @@ createApp({
                 window.open(webUrl, '_blank');
             }, 1500);
         },
-        openImageModal(url) {
-            this.selectedImageUrl = url;
+        openImageModalFromRestaurant(restaurant, index) {
+            const images = this.getBannerImages(restaurant);
+            if (!images.length) {
+                return;
+            }
+            this.openImageModal(images, index);
+        },
+        openImageModal(images, startIndex = 0) {
+            if (!Array.isArray(images) || images.length === 0) {
+                return;
+            }
+
+            const normalizedIndex = Math.min(Math.max(startIndex, 0), images.length - 1);
+
+            this.modalImages = images.slice();
+            this.modalImageIndex = normalizedIndex;
+            this.modalTouchStartX = null;
+            this.updateModalImage();
             this.imageModalVisible = true;
+
+            this.$nextTick(() => {
+                const modal = this.$refs.imageModal;
+                if (modal) {
+                    modal.focus();
+                }
+            });
         },
         closeImageModal() {
             this.imageModalVisible = false;
             this.selectedImageUrl = '';
+            this.modalImages = [];
+            this.modalImageIndex = 0;
+            this.modalTouchStartX = null;
+        },
+        updateModalImage() {
+            this.selectedImageUrl = this.modalImages[this.modalImageIndex] || '';
+        },
+        showPrevModalImage() {
+            if (!this.hasPrevModalImage) {
+                return;
+            }
+            this.modalImageIndex -= 1;
+            this.updateModalImage();
+        },
+        showNextModalImage() {
+            if (!this.hasNextModalImage) {
+                return;
+            }
+            this.modalImageIndex += 1;
+            this.updateModalImage();
+        },
+        handleModalTouchStart(event) {
+            if (!event.changedTouches || !event.changedTouches.length) {
+                return;
+            }
+            this.modalTouchStartX = event.changedTouches[0].clientX;
+        },
+        handleModalTouchEnd(event) {
+            if (
+                this.modalTouchStartX === null ||
+                !event.changedTouches ||
+                !event.changedTouches.length
+            ) {
+                return;
+            }
+
+            const endX = event.changedTouches[0].clientX;
+            const deltaX = endX - this.modalTouchStartX;
+
+            this.modalTouchStartX = null;
+
+            const SWIPE_THRESHOLD = 40;
+
+            if (Math.abs(deltaX) < SWIPE_THRESHOLD) {
+                return;
+            }
+
+            if (deltaX > 0) {
+                this.showPrevModalImage();
+            } else {
+                this.showNextModalImage();
+            }
         },
         openMenuModal(faciltId) {
             const restaurant = this.allRestaurants.find(r => r.DetailShortInfo.faciltId === faciltId);
