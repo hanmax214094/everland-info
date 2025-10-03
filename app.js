@@ -13,6 +13,7 @@ createApp({
                 zone: null
             },
             searchQuery: '',
+            isFilterBarCollapsed: false,
             isLoading: true,
             imageModalVisible: false,
             selectedImageUrl: '',
@@ -46,6 +47,9 @@ createApp({
         },
         hasActiveFilters() {
             return this.filters.food.length > 0 || !!this.filters.zone || !!this.searchQuery;
+        },
+        filterBarToggleText() {
+            return this.isFilterBarCollapsed ? '展開搜尋與篩選' : '收合搜尋與篩選';
         }
     },
     methods: {
@@ -127,6 +131,9 @@ createApp({
             this.filters.food = [];
             this.filters.zone = null;
             this.searchQuery = '';
+        },
+        toggleFilterBar() {
+            this.isFilterBarCollapsed = !this.isFilterBarCollapsed;
         },
         buildGoogleMapUrl(restaurant) {
             const loc = restaurant.DetailShortInfo.locList && restaurant.DetailShortInfo.locList[0];
