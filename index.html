@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Everland Restaurants - Card View</title>
     <style>
+        html {
+            font-size: 23px;
+        }
+
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
             background-color: #343a40;
@@ -12,6 +16,7 @@
             margin: 0;
             padding: 20px;
             padding-bottom: 100px; /* Add padding to bottom to avoid overlap with filter bar */
+            font-size: 1.28rem;
         }
         .grid-container {
             display: grid;
@@ -36,9 +41,10 @@
             flex-grow: 1;
             display: flex;
             flex-direction: column;
+            gap: 8px;
         }
         .card-title {
-            font-size: 1.25rem;
+            font-size: 1.45rem;
             font-weight: bold;
             margin: 0 0 10px 0;
         }
@@ -46,7 +52,7 @@
             display: inline-block;
             padding: 4px 8px;
             border-radius: 4px;
-            font-size: 0.8rem;
+            font-size: 1.08rem;
             font-weight: bold;
             margin-right: 5px;
             margin-bottom: 5px;
@@ -56,17 +62,29 @@
             color: #ced4da;
             margin: 0 0 10px 0;
             font-style: italic;
+            font-size: 16px;
         }
         .card-keywords {
             color: #adb5bd;
-            font-size: 0.9rem;
-            flex-grow: 1;
+            font-size: 1.15rem;
+            margin: 0;
         }
         .map-buttons {
-            margin-top: 15px;
+            margin-top: auto;
+            padding-top: 10px;
             display: flex;
             align-items: center;
+            gap: 12px;
+        }
+        .map-links {
+            margin-left: auto;
+            display: inline-flex;
+            align-items: center;
             gap: 10px;
+        }
+        .map-links a {
+            display: inline-flex;
+            align-items: center;
         }
         .map-button {
             padding: 8px 12px;
@@ -74,7 +92,7 @@
             border-radius: 4px;
             color: white;
             text-decoration: none;
-            font-size: 0.9rem;
+            font-size: 1.15rem;
             cursor: pointer;
             background-color: #0d6efd; /* Set background color for visibility */
         }
@@ -148,6 +166,7 @@
             align-items: center;
             border-bottom: 1px solid #eee;
             padding: 10px 0;
+            font-size: 1.18rem;
         }
 
         #menu-modal-content li:last-child {
@@ -160,6 +179,19 @@
             object-fit: cover;
             border-radius: 4px;
             margin-right: 15px;
+        }
+
+        #menu-modal-content li strong {
+            font-size: 1.3rem;
+        }
+
+        #menu-modal-content li p:not(.menu-item-eng) {
+            margin: 2px 0;
+            font-size: 1.15rem;
+        }
+
+        .menu-item-eng {
+            font-size: 16px;
         }
 
         #menu-modal-title {
@@ -206,6 +238,7 @@
             border-radius: 15px;
             cursor: pointer;
             transition: all 0.2s ease-in-out;
+            font-size: 1.15rem;
         }
 
         .filter-btn.active {
@@ -282,10 +315,10 @@
         function populateFilters(foodTypesData, zoneTypesData) {
             const foodContainer = document.getElementById('food-type-filters');
             const zoneContainer = document.getElementById('zone-type-filters');
-            foodContainer.innerHTML = '<span style="margin-right:10px; font-weight:bold; color: white;">食物:</span>' + foodTypesData.map(type => 
+            foodContainer.innerHTML = '<span style="margin-right:10px; font-weight:bold; color: white; font-size:1.2rem;">食物:</span>' + foodTypesData.map(type =>
                 `<button class="filter-btn" id="filter-food-${type.codeId}" onclick="toggleFoodFilter('${type.codeId}')">${type.codeNameCN}</button>`
             ).join('');
-            zoneContainer.innerHTML = '<span style="margin-right:10px; font-weight:bold; color: white;">區域:</span>' + zoneTypesData.map(type => 
+            zoneContainer.innerHTML = '<span style="margin-right:10px; font-weight:bold; color: white; font-size:1.2rem;">區域:</span>' + zoneTypesData.map(type =>
                 `<button class="filter-btn" id="filter-zone-${type.codeId}" onclick="toggleZoneFilter('${type.codeId}')">${type.codeNameCN}</button>`
             ).join('');
         }
@@ -302,7 +335,7 @@
             });
 
             if (filteredRestaurants.length === 0) {
-                grid.innerHTML = '<p style="text-align: center; grid-column: 1 / -1; font-size: 1.2rem;">找不到相符的資訊。</p>';
+                grid.innerHTML = '<p style="text-align: center; grid-column: 1 / -1; font-size: 1.3rem;">找不到相符的資訊。</p>';
                 return;
             }
 
@@ -347,8 +380,10 @@
                         <p class="card-keywords">${keywordDescrtCN.replace(/#/g, ', ')}</p>
                         <div class="map-buttons">
                             <button class="map-button" onclick="openMenuModal('${faciltId}')">檢視菜單</button>
-                            <a href="${googleMapUrl}" target="_blank"><img src="google-maps.png" alt="Google Maps" class="map-logo"></a>
-                            <a href="javascript:void(0);" onclick="openNaverMap('${naverMapUrl}', '${naverMapWebUrl}')"><img src="naver-map.png" alt="Naver Map" class="map-logo"></a>
+                            <div class="map-links">
+                                <a href="${googleMapUrl}" target="_blank"><img src="google-maps.png" alt="Google Maps" class="map-logo"></a>
+                                <a href="javascript:void(0);" onclick="openNaverMap('${naverMapUrl}', '${naverMapWebUrl}')"><img src="naver-map.png" alt="Naver Map" class="map-logo"></a>
+                            </div>
                         </div>
                     </div>
                 `;
@@ -422,7 +457,7 @@
                             <img src="${item.menuImagUrl}" alt="${item.menuDescrtCN}">
                             <div>
                                 <strong>${item.menuDescrtCN}</strong>
-                                <p>${item.menuDescrtEng || ''}</p>
+                                <p class="menu-item-eng">${item.menuDescrtEng || ''}</p>
                                 <p>價格: ${item.menuPrice}</p>
                             </div>
                         </li>`;
