@@ -133,14 +133,32 @@
             transition: transform 0.2s ease;
         }
 
-        #filter-bar.is-collapsed .filter-bar__toggle-icon {
-            transform: rotate(-90deg);
+        #filter-bar:not(.is-collapsed) .filter-bar__toggle-icon {
+            transform: rotate(180deg);
         }
 
         .filter-bar__content {
             display: flex;
             flex-direction: column;
             gap: 16px;
+        }
+
+        #filter-bar.is-collapsed .filter-bar__header {
+            margin-bottom: 0;
+        }
+
+        .filter-bar__summary {
+            margin: 0;
+            font-size: 0.9rem;
+            color: var(--muted-color);
+            background: rgba(92, 107, 242, 0.12);
+            border-radius: 14px;
+            padding: 10px 14px;
+            line-height: 1.4;
+        }
+
+        #filter-bar.is-collapsed .filter-bar__summary {
+            margin-top: 12px;
         }
 
         .search-row {
@@ -556,6 +574,10 @@
                 justify-content: center;
             }
 
+            .filter-bar__summary {
+                width: 100%;
+            }
+
             .grid-container {
                 gap: 18px;
             }
@@ -624,6 +646,7 @@
                             @click="toggleFilterBar"
                             :aria-expanded="!isFilterBarCollapsed"
                             aria-controls="filter-bar-content"
+                            :aria-describedby="isFilterBarCollapsed ? 'filter-bar-summary' : null"
                         >
                             <span>{{ filterBarToggleText }}</span>
                             <svg viewBox="0 0 24 24" aria-hidden="true" class="filter-bar__toggle-icon">
@@ -631,6 +654,11 @@
                             </svg>
                         </button>
                     </div>
+                    <p
+                        v-if="isFilterBarCollapsed"
+                        class="filter-bar__summary"
+                        id="filter-bar-summary"
+                    >{{ filterBarSummary }}</p>
                     <div class="filter-bar__content" id="filter-bar-content" v-show="!isFilterBarCollapsed">
                         <div class="search-row">
                             <label class="search-input">

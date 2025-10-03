@@ -14,6 +14,7 @@ createApp({
             },
             searchQuery: '',
             isFilterBarCollapsed: false,
+            hasUserToggledFilterBar: false,
             isLoading: true,
             imageModalVisible: false,
             selectedImageUrl: '',
@@ -50,6 +51,36 @@ createApp({
         },
         filterBarToggleText() {
             return this.isFilterBarCollapsed ? '展開搜尋與篩選' : '收合搜尋與篩選';
+        },
+        filterBarSummary() {
+            const summaryParts = [];
+
+            if (this.searchQuery) {
+                summaryParts.push(`搜尋：「${this.searchQuery}」`);
+            }
+
+            if (this.filters.food.length) {
+                const names = this.filters.food
+                    .map(id => this.getFoodTypeName(id))
+                    .filter(Boolean);
+
+                if (names.length) {
+                    summaryParts.push(`食物類型：${names.join('、')}`);
+                }
+            }
+
+            if (this.filters.zone) {
+                const zoneName = this.getZoneTypeName(this.filters.zone);
+                if (zoneName && zoneName !== '未知區域') {
+                    summaryParts.push(`園區分區：${zoneName}`);
+                }
+            }
+
+            if (!summaryParts.length) {
+                return '尚未套用任何篩選條件';
+            }
+
+            return summaryParts.join(' ｜ ');
         }
     },
     methods: {
@@ -134,6 +165,22 @@ createApp({
         },
         toggleFilterBar() {
             this.isFilterBarCollapsed = !this.isFilterBarCollapsed;
+            this.hasUserToggledFilterBar = true;
+        },
+        handleResize() {
+            if (typeof window === 'undefined') {
+                return;
+            }
+
+            if (window.innerWidth > 768) {
+                this.isFilterBarCollapsed = false;
+                this.hasUserToggledFilterBar = false;
+                return;
+            }
+
+            if (!this.hasUserToggledFilterBar) {
+                this.isFilterBarCollapsed = true;
+            }
         },
         buildGoogleMapUrl(restaurant) {
             const loc = restaurant.DetailShortInfo.locList && restaurant.DetailShortInfo.locList[0];
@@ -192,5 +239,14 @@ createApp({
     },
     mounted() {
         this.loadData();
+        if (typeof window !== 'undefined') {
+            this.handleResize();
+            window.addEventListener('resize', this.handleResize);
+        }
+    },
+    beforeUnmount() {
+        if (typeof window !== 'undefined') {
+            window.removeEventListener('resize', this.handleResize);
+        }
     }
 }).mount('#app');
