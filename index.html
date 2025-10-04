@@ -35,6 +35,33 @@
             margin: 0;
         }
 
+        .naver-map-link {
+            position: fixed;
+            top: 16px;
+            right: 20px;
+            width: 52px;
+            height: 52px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 12px 24px rgba(31, 42, 68, 0.18);
+            color: var(--accent-color);
+            font-size: 28px;
+            text-decoration: none;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+            z-index: 400;
+        }
+
+        .naver-map-link:hover,
+        .naver-map-link:focus-visible {
+            transform: translateY(-2px);
+            box-shadow: 0 16px 32px rgba(31, 42, 68, 0.24);
+            background: #fff;
+            outline: none;
+        }
+
         #app {
             min-height: 100vh;
         }
@@ -814,6 +841,15 @@
     </style>
 </head>
 <body>
+    <a
+        class="naver-map-link"
+        href="https://map.naver.com/p/search/%ED%99%94%EC%9E%A5%EC%8B%A4"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="在 NAVER MAP 搜尋 화장실"
+    >
+        <span aria-hidden="true">🚻</span>
+    </a>
     <div id="app">
         <div class="page-container">
             <header>
