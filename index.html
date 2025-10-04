@@ -841,16 +841,15 @@
     </style>
 </head>
 <body>
-    <a
-        class="naver-map-link"
-        href="https://map.naver.com/p/search/%ED%99%94%EC%9E%A5%EC%8B%A4"
-        target="_blank"
-        rel="noopener noreferrer"
-        aria-label="在 NAVER MAP 搜尋 화장실"
-    >
-        <span aria-hidden="true">🚻</span>
-    </a>
     <div id="app">
+        <a
+            class="naver-map-link"
+            href="#"
+            @click.prevent="handleOpenRestroomSearch"
+            aria-label="在 NAVER MAP 搜尋 화장실"
+        >
+            <span aria-hidden="true">🚻</span>
+        </a>
         <div class="page-container">
             <header>
                 <h1 class="page-title">Everland 餐廳探索</h1>
