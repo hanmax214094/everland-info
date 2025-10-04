@@ -249,6 +249,13 @@ createApp({
             const { app, web } = this.buildNaverMapUrls(restaurant);
             this.openNaverMap(app, web);
         },
+        handleOpenRestroomSearch() {
+            const keyword = '화장실';
+            const encodedKeyword = encodeURIComponent(keyword);
+            const appUrl = `nmap://search?query=${encodedKeyword}&appname=com.max.everland`;
+            const webUrl = `https://map.naver.com/p/search/${encodedKeyword}`;
+            this.openNaverMap(appUrl, webUrl);
+        },
         openNaverMap(url, webUrl) {
             const start = new Date().getTime();
             window.location.href = url;
