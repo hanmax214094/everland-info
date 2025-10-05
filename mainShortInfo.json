@@ -5,7 +5,7 @@
         "foodTypeCds": "05",
         "zoneType": "01",
         "ZoneNameEng": "Global Fair",
-        "ZoneNameCN": "全球博覽會",
+        "ZoneNameCN": "環球市集",
         "InfoUrl": "https://www.everland.com/everland/map/facility?fcl=H100V01064&div=04&lat=37.29408501&lng=127.2032686",
         "DetailShortInfo": {
             "faciltId": "H100V01064",
@@ -254,7 +254,7 @@
         "foodTypeCds": "04,05",
         "zoneType": "02",
         "ZoneNameEng": "American Adventure",
-        "ZoneNameCN": "美國冒險",
+        "ZoneNameCN": "美洲冒險",
         "InfoUrl": "https://www.everland.com/everland/map/facility?fcl=H100V02011&div=04&lat=37.29271&lng=127.20149",
         "DetailShortInfo": {
             "faciltId": "H100V02011",
@@ -336,7 +336,7 @@
         "foodTypeCds": "06",
         "zoneType": "01",
         "ZoneNameEng": "Global Fair",
-        "ZoneNameCN": "全球博覽會",
+        "ZoneNameCN": "環球市集",
         "InfoUrl": "https://www.everland.com/everland/map/facility?fcl=H100V01028&div=04&lat=37.29479809&lng=127.2031888",
         "DetailShortInfo": {
             "faciltId": "H100V01028",
@@ -421,7 +421,7 @@
         "foodTypeCds": "06",
         "zoneType": "01",
         "ZoneNameEng": "Global Fair",
-        "ZoneNameCN": "全球博覽會",
+        "ZoneNameCN": "環球市集",
         "InfoUrl": "https://www.everland.com/everland/map/facility?fcl=H100V01034&div=04&lat=37.29418&lng=127.20266",
         "DetailShortInfo": {
             "faciltId": "H100V01034",
@@ -506,7 +506,7 @@
         "foodTypeCds": "05",
         "zoneType": "02",
         "ZoneNameEng": "American Adventure",
-        "ZoneNameCN": "美國冒險",
+        "ZoneNameCN": "美洲冒險",
         "InfoUrl": "https://www.everland.com/everland/map/facility?fcl=H100V02014&div=04&lat=37.29372&lng=127.20177",
         "DetailShortInfo": {
             "faciltId": "H100V02014",
@@ -585,7 +585,7 @@
         "foodTypeCds": "06",
         "zoneType": "01",
         "ZoneNameEng": "Global Fair",
-        "ZoneNameCN": "全球博覽會",
+        "ZoneNameCN": "環球市集",
         "InfoUrl": "https://www.everland.com/everland/map/facility?fcl=H100V01044&div=04&lat=37.29530488&lng=127.2038711",
         "DetailShortInfo": {
             "faciltId": "H100V01044",
@@ -1239,7 +1239,7 @@
         "foodTypeCds": "05",
         "zoneType": "02",
         "ZoneNameEng": "American Adventure",
-        "ZoneNameCN": "美國冒險",
+        "ZoneNameCN": "美洲冒險",
         "InfoUrl": "https://www.everland.com/everland/map/facility?fcl=H100V02025&div=04&lat=37.29307180&lng=127.2016870",
         "DetailShortInfo": {
             "faciltId": "H100V02025",
@@ -1395,7 +1395,7 @@
         "foodTypeCds": "05",
         "zoneType": "03",
         "ZoneNameEng": "Magic Land",
-        "ZoneNameCN": "魔法樂園",
+        "ZoneNameCN": "魔術天地",
         "InfoUrl": "https://www.everland.com/everland/map/facility?fcl=H100V03039&div=04&lat=37.29214&lng=127.19896",
         "DetailShortInfo": {
             "faciltId": "H100V03039",
@@ -1797,7 +1797,7 @@
         "foodTypeCds": "07",
         "zoneType": "03",
         "ZoneNameEng": "Magic Land",
-        "ZoneNameCN": "魔法樂園",
+        "ZoneNameCN": "魔術天地",
         "InfoUrl": "https://www.everland.com/everland/map/facility?fcl=H100V03028&div=04&lat=37.29324333&lng=127.1994996",
         "DetailShortInfo": {
             "faciltId": "H100V03028",
@@ -2219,7 +2219,7 @@
         "foodTypeCds": "01,03",
         "zoneType": "01",
         "ZoneNameEng": "Global Fair",
-        "ZoneNameCN": "全球博覽會",
+        "ZoneNameCN": "環球市集",
         "InfoUrl": "https://www.everland.com/everland/map/facility?fcl=H100V01012&div=04&lat=37.29391&lng=127.20312",
         "DetailShortInfo": {
             "faciltId": "H100V01012",
@@ -2388,7 +2388,7 @@
         "foodTypeCds": "05",
         "zoneType": "02",
         "ZoneNameEng": "American Adventure",
-        "ZoneNameCN": "美國冒險",
+        "ZoneNameCN": "美洲冒險",
         "InfoUrl": "https://www.everland.com/everland/map/facility?fcl=H100V02031&div=04&lat=37.29389461&lng=127.2013241",
         "DetailShortInfo": {
             "faciltId": "H100V02031",
@@ -2552,7 +2552,7 @@
         "foodTypeCds": "04,05",
         "zoneType": "02",
         "ZoneNameEng": "American Adventure",
-        "ZoneNameCN": "美國冒險",
+        "ZoneNameCN": "美洲冒險",
         "InfoUrl": "https://www.everland.com/everland/map/facility?fcl=H100V02012&div=04&lat=37.29372&lng=127.20146",
         "DetailShortInfo": {
             "faciltId": "H100V02012",
@@ -2719,7 +2719,7 @@
         "foodTypeCds": "05",
         "zoneType": "03",
         "ZoneNameEng": "Magic Land",
-        "ZoneNameCN": "魔法樂園",
+        "ZoneNameCN": "魔術天地",
         "InfoUrl": "https://www.everland.com/everland/map/facility?fcl=H100V03030&div=04&lat=37.29200736&lng=127.1990762",
         "DetailShortInfo": {
             "faciltId": "H100V03030",
@@ -2869,7 +2869,7 @@
         "foodTypeCds": "01",
         "zoneType": "01",
         "ZoneNameEng": "Global Fair",
-        "ZoneNameCN": "全球博覽會",
+        "ZoneNameCN": "環球市集",
         "InfoUrl": "https://www.everland.com/everland/map/facility?fcl=H100V01042&div=04&lat=37.29506&lng=127.20340",
         "DetailShortInfo": {
             "faciltId": "H100V01042",
@@ -2954,7 +2954,7 @@
         "foodTypeCds": "03",
         "zoneType": "01",
         "ZoneNameEng": "Global Fair",
-        "ZoneNameCN": "全球博覽會",
+        "ZoneNameCN": "環球市集",
         "InfoUrl": "https://www.everland.com/everland/map/facility?fcl=H100V01041&div=04&lat=37.29510&lng=127.20352",
         "DetailShortInfo": {
             "faciltId": "H100V01041",
@@ -3039,7 +3039,7 @@
         "foodTypeCds": "02",
         "zoneType": "01",
         "ZoneNameEng": "Global Fair",
-        "ZoneNameCN": "全球博覽會",
+        "ZoneNameCN": "環球市集",
         "InfoUrl": "https://www.everland.com/everland/map/facility?fcl=H100V01043&div=04&lat=37.29520&lng=127.20377",
         "DetailShortInfo": {
             "faciltId": "H100V01043",
@@ -3121,7 +3121,7 @@
         "foodTypeCds": "03",
         "zoneType": "01",
         "ZoneNameEng": "Global Fair",
-        "ZoneNameCN": "全球博覽會",
+        "ZoneNameCN": "環球市集",
         "InfoUrl": "https://www.everland.com/everland/map/facility?fcl=H100V01045&div=04&lat=37.29527&lng=127.20382",
         "DetailShortInfo": {
             "faciltId": "H100V01045",
@@ -3453,7 +3453,7 @@
         "foodTypeCds": "05,06",
         "zoneType": "03",
         "ZoneNameEng": "Magic Land",
-        "ZoneNameCN": "魔法樂園",
+        "ZoneNameCN": "魔術天地",
         "InfoUrl": "https://www.everland.com/everland/map/facility?fcl=H100V02026&div=04&lat=37.29411593&lng=127.1996612",
         "DetailShortInfo": {
             "faciltId": "H100V02026",
